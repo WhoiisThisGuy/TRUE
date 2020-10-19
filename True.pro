@@ -18,13 +18,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     gridmodel.cpp \
     main.cpp \
-    mainwindow.cpp \
-    node.cpp
+    mainwindow.cpp
 
 HEADERS += \
     gridmodel.h \
-    mainwindow.h \
-    node.h
+    mainwindow.h
 
 FORMS += \
     mainwindow.ui

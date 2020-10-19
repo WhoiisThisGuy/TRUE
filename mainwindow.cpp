@@ -4,43 +4,125 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    ,myGridModel(3,3) //default 3x3
+    , cellsize(20)
 {
 
     ui->setupUi(this);
 
-    ui->myGridView->setModel(&myGridModel);
-    ui->myGridView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed); //nem méretezhető
-    ui->myGridView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed); //nem méretezhető
-    ui->myGridView->show();
 
+
+    InitModelView();
 }
 
 
 MainWindow::~MainWindow()
 {
+    if(myGridModel) //Safety + clean up
+        delete myGridModel;
     delete ui;
 }
 
 void MainWindow::on_myGridView_clicked(const QModelIndex &index)
 {
-    QVariant qv = myGridModel.data(index,Qt::BackgroundColorRole);
-    if(qv.value<QColor>() == Qt::white){
+    QVariant qvIndex = myGridModel->data(index,Qt::BackgroundColorRole);
+
+    QColor qcolorIndex = qvIndex.value<QColor>();
+
+    if(isStartOrTargetSelected){
+
+        if(myGridModel->getGridValueByIndex(index) == 0){
+
+            isStartOrTargetSelected = false;
+
+            myGridModel->setData(index,startOrTargetSelectedColor,Qt::BackgroundColorRole);
+            return;
+        }
+        return;
+    }
+    if(qcolorIndex == Qt::white){
         QColor c = Qt::gray;
-        myGridModel.setData(index,c,Qt::BackgroundColorRole);
+        myGridModel->setData(index,c,Qt::BackgroundColorRole);
+
     }
-    else if(qv.value<QColor>() == Qt::gray){
+    else if(qcolorIndex == Qt::gray){
         QColor c = Qt::white;
-        myGridModel.setData(index,c,Qt::BackgroundColorRole);
+        myGridModel->setData(index,c,Qt::BackgroundColorRole);
     }
-}
+    else if(qcolorIndex == Qt::red || qcolorIndex == Qt::green){
+        if(!isStartOrTargetSelected){
 
-void MainWindow::on_myGridView_activated(const QModelIndex &index)
-{
+            isStartOrTargetSelected = true;
 
+            startOrTargetSelectedIndex = index;
+            startOrTargetSelectedColor = qcolorIndex;
+            QColor c = Qt::white;
+            myGridModel->setData(index, c,Qt::BackgroundColorRole);
+
+            return;
+        }
+    }
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-    myGridModel.setRowandCols(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
+    InitModelView();
+}
+
+void MainWindow::InitModelView()
+{
+    if(myGridModel)
+        delete myGridModel;
+
+    myGridModel = new GridModel(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
+
+    ui->myGridView->setModel(myGridModel);
+    ui->myGridView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed); //Fixed cell size
+    ui->myGridView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed); //Fixed cell size
+
+    int viewWidth;
+    int viewHeight;
+
+    viewWidth = cellsize * (ui->numberOfColumnsBox->value()+2);
+    viewHeight = cellsize * (ui->numberOfRowsBox->value()+2);
+
+    QRect rect = ui->myGridView->geometry();
+
+    rect.setWidth(viewWidth);
+    rect.setHeight(viewHeight);
+
+    ui->myGridView->setGeometry(rect);
+    ui->myGridView->show();
+}
+
+
+void MainWindow::on_myGridView_entered(const QModelIndex &index)
+{
+ QVariant qvarIndex = myGridModel->data(index,Qt::BackgroundColorRole);
+
+  QColor qcolorIndex = qvarIndex.value<QColor>();
+
+  if(isStartOrTargetSelected && myGridModel->getGridValueByIndex(index) == 0) {
+        myGridModel->setData(index, startOrTargetSelectedColor,Qt::BackgroundColorRole);
+   }
+  else{
+      return;
+  }
+
+}
+
+void MainWindow::on_clearButton_clicked()
+{
+
+//    for(int i = 0;i<100;++i)
+//        for(int j = 0;j<100;++j)
+//            if(myGridModel->getGridValueByRowCol(i,j) == 1){
+
+//                QModelIndex index = myGridModel->index(i,j);
+//                myGridModel->setData(index,QColor(Qt::red),Qt::BackgroundColorRole);
+//                //grid[i][j] = 0; //Minden cella fehér alapból
+
+//            }
+
+    myGridModel->clearGrid();
+
 }

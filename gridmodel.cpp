@@ -10,9 +10,14 @@ GridModel::GridModel(int n,int m)
     grid[0][0] = 2; //Start
     grid[2][2] = 3; //Target
 
+    pStart.setX(0);
+    pStart.setY(0);
+
+    pTarget.setX(2);
+    pTarget.setX(2);
+
     numberOfRows = n;
     numberOfColumns = m;
-
 
 
 }
@@ -34,10 +39,10 @@ QVariant GridModel::data(const QModelIndex &index, int role) const
     switch(role){
         case Qt::BackgroundColorRole:{
             char c = grid[index.column()][index.row()];
-            if (c == 0) return QBrush(Qt::white);
-            else if(c == 1) return QBrush(Qt::gray);
-            else if(c == 2) return QBrush(Qt::green);
-            else if(c == 3) return QBrush(Qt::red);
+            if (c == 0) return QColor(Qt::white);
+            else if(c == 1) return QColor(Qt::gray);
+            else if(c == 2) return QColor(Qt::green);
+            else if(c == 3) return QColor(Qt::red);
         }
          break;
         default:
@@ -48,29 +53,60 @@ QVariant GridModel::data(const QModelIndex &index, int role) const
 
 bool GridModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    QPoint pIndex;
+    pIndex.setX(index.column());
+    pIndex.setY(index.row());
+
     switch(role){
         case Qt::BackgroundColorRole:
+
+            QVector<int> roles;
+
+            roles.push_back(Qt::BackgroundColorRole);
 
             QColor c = value.value<QColor>();
 
             if(c == Qt::white){
-                grid[index.column()][index.row()] = 0;
-                emit(dataChanged(index, index));
+                grid[pIndex.x()][pIndex.y()] = 0;
+
+                emit(dataChanged(index, index,roles));
+                return true;
             }
             else if(c == Qt::gray){
-                grid[index.column()][index.row()] = 1;
-                emit(dataChanged(index, index));
+                grid[pIndex.x()][pIndex.y()] = 1;
+                emit(dataChanged(index, index,roles));
+                return true;
 
             }
-            else if(c == Qt::green){
-                grid[index.column()][index.row()] = 2;
-                emit(dataChanged(index, index));
-            }
-            else if(c == Qt::red){
-                grid[index.column()][index.row()] = 3;
-                emit(dataChanged(index, index));
-            }
+            else if(c == Qt::green && grid[pIndex.x()][pIndex.y()] == 0){
 
+
+                if(pStart.x() != index.column() || pStart.y() != index.row()){
+                    grid[pStart.x()][pStart.y()] = 0;
+
+                    pStart.setX(index.column());
+                    pStart.setY(index.row());
+                }
+
+                grid[pStart.x()][pStart.y()] = 2;
+
+                emit(dataChanged(index, index,roles));
+                return true;
+            }
+            else if(c == Qt::red && grid[pIndex.x()][pIndex.y()] == 0){
+                if(pTarget.x() != index.column() || pTarget.y() != index.row()){
+                    grid[pTarget.x()][pTarget.y()] = 0;
+
+                    pTarget.setX(index.column());
+                    pTarget.setY(index.row());
+
+                }
+
+                grid[pTarget.x()][pTarget.y()] = 3;
+                emit(dataChanged(index, index,roles));
+                return true;
+            }
+        return false;
          break;
     }
 }
@@ -84,6 +120,32 @@ void GridModel::setRowandCols(int a, int b)
 {
     numberOfRows = a;
     numberOfColumns = b;
-    //emit(dataChanged(this->index(0, 0), this->index(rowCount(), columnCount())));
+
+}
+
+int GridModel::getGridValueByIndex(const QModelIndex &index)
+{
+    return grid[index.row()][index.column()];
+}
+
+int GridModel::getGridValueByRowCol(int row, int col)
+{
+    return grid[row][col];
+}
+
+void GridModel::clearGrid()
+{
+
+    for(int i = 0;i<numberOfRows;++i)
+        for(int j = 0;j<numberOfColumns;++j)
+            if(grid[i][j] == 1){
+
+                QModelIndex index = this->index(i,j);
+                grid[i][j] = 0;
+                setData(index,QColor(Qt::white),Qt::BackgroundColorRole);
+
+            }
+
+
 
 }
