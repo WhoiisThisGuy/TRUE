@@ -57,18 +57,16 @@ bool GridModel::setData(const QModelIndex &index, const QVariant &value, int rol
     pIndex.setX(index.column());
     pIndex.setY(index.row());
 
+    QVector<int> roles;
+
+    roles.push_back(Qt::BackgroundColorRole);
+
     switch(role){
         case Qt::BackgroundColorRole:
-
-            QVector<int> roles;
-
-            roles.push_back(Qt::BackgroundColorRole);
-
             QColor c = value.value<QColor>();
 
             if(c == Qt::white){
-                grid[pIndex.x()][pIndex.y()] = 0;
-
+                grid[index.column()][index.row()] = 0;
                 emit(dataChanged(index, index,roles));
                 return true;
             }
@@ -109,6 +107,8 @@ bool GridModel::setData(const QModelIndex &index, const QVariant &value, int rol
         return false;
          break;
     }
+
+    return true;
 }
 
 GridModel::~GridModel()
@@ -139,13 +139,12 @@ void GridModel::clearGrid()
     for(int i = 0;i<numberOfRows;++i)
         for(int j = 0;j<numberOfColumns;++j)
             if(grid[i][j] == 1){
-
-                QModelIndex index = this->index(i,j);
                 grid[i][j] = 0;
-                setData(index,QColor(Qt::white),Qt::BackgroundColorRole);
-
             }
 
+    QVector<int> roles;
+    roles.push_back(Qt::BackgroundColorRole);
 
+    emit(dataChanged(index(0,0), index(numberOfRows,numberOfColumns),roles));
 
 }

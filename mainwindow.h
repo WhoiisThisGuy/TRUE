@@ -2,11 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-//#include "QTableView"
 #include "gridmodel.h"
 #include "QVariant"
 #include "QMouseEvent"
 #include "QPainter"
+#include "QFileDialog"
+
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,17 +22,35 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+#ifndef QT_NO_CONTEXTMENU
+    void contextMenuEvent(QContextMenuEvent *event) override;
+#endif // QT_NO_CONTEXTMENU
+
+private:
+    void createMenus();
+    void createActions();
+    void InitModelView();
+    void AddAlgorithmToFile(const QString& string);
+    bool ReadAlgorithms(); //Read the algortihm names and paths at the start.
+    bool InitAlgorithmListWidget();
+
 private slots:
 
     void on_myGridView_clicked(const QModelIndex &index);
 
     void on_pushButton_clicked();
 
-    void InitModelView();
-
     void on_myGridView_entered(const QModelIndex &index);
 
     void on_clearButton_clicked();
+
+    void addAlgorithm();
+    void exit();
+
+    void on_buttonParameters_clicked();
+
+    void on_widgetListAlgorithms_itemSelectionChanged();
 
 private:
     Ui::MainWindow *ui;
@@ -38,12 +58,17 @@ private:
     bool grabbed = false;
     bool isStartOrTargetSelected = false;
 
+    QStringList slistAlgoNames;
+    QStringList slistAlgoDllPaths;
+
     QModelIndex startOrTargetSelectedIndex;
     QColor startOrTargetSelectedColor;
 
     QColor previousClickedColor;
 
     GridModel* myGridModel = nullptr; //Pointer because resizing the grid is solved by creating a new object. Faster than smarter solution.
-
+    QMenu *fileMenu;
+    QAction *newAlgoAct;
+    QAction *exitAct;
 };
 #endif // MAINWINDOW_H
