@@ -17,20 +17,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     dialogaddalgorithm.cpp \
-    dialogparamteres.cpp \
+    dialogaddparamrow.cpp \
+    dialogparameters.cpp \
     gridmodel.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     dialogaddalgorithm.h \
-    dialogparamteres.h \
+    dialogaddparamrow.h \
+    dialogparameters.h \
     gridmodel.h \
     mainwindow.h
 
 FORMS += \
     dialogaddalgorithm.ui \
-    dialogparamteres.ui \
+    dialogaddparamrow.ui \
+    dialogparameters.ui \
     mainwindow.ui
 
 # Default rules for deployment.

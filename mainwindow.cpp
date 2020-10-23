@@ -3,6 +3,7 @@
 #include "QMessageBox"
 #include "dialogaddalgorithm.h"
 #include "QTextStream"
+#include "dialogparameters.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
 
+    connect(&dialogparam,&DialogParameters::finished,this,&MainWindow::on_paramWindowDestroyed);
     createActions();
     createMenus();
 
@@ -23,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+
     if(myGridModel) //Safety + clean up
         delete myGridModel;
     delete ui;
@@ -170,7 +173,7 @@ void MainWindow::on_myGridView_entered(const QModelIndex &index)
 {
  QVariant qvarIndex = myGridModel->data(index,Qt::BackgroundColorRole);
 
-  QColor qcolorIndex = qvarIndex.value<QColor>();
+  //QColor qcolorIndex = qvarIndex.value<QColor>();
 
   if(isStartOrTargetSelected && myGridModel->getGridValueByIndex(index) == 0) {
         myGridModel->setData(index, startOrTargetSelectedColor,Qt::BackgroundColorRole);
@@ -188,16 +191,15 @@ void MainWindow::on_clearButton_clicked()
 
 }
 
+void MainWindow::on_paramWindowDestroyed()
+{
+    ui->buttonParameters->setEnabled(true);
+}
+
 void MainWindow::addAlgorithm()
 {
     DialogAddAlgorithm dialog(this);
     dialog.exec();
-    dialog.show();
-//    QString fileName = QFileDialog::getOpenFileName(this,
-//    tr("Algoritmus hozzáadása"), "",
-//    tr("Address Book (*.dll)"));
-//    if (fileName.isEmpty())
-//            return;
 }
 
 void MainWindow::exit()
@@ -226,13 +228,15 @@ void MainWindow::createActions()
 
 void MainWindow::on_buttonParameters_clicked()
 {
+    dialogparam.show();
+    ui->buttonParameters->setEnabled(false);
 
 }
 
 void MainWindow::on_widgetListAlgorithms_itemSelectionChanged()
 {
     QList<QListWidgetItem*> selected = ui->widgetListAlgorithms->selectedItems();
-    if(selected.empty())
+    if(selected.empty() || dialogparam.isVisible())
         ui->buttonParameters->setEnabled(false);
     else
         ui->buttonParameters->setEnabled(true);

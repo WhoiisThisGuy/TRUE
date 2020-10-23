@@ -7,6 +7,7 @@
 #include "QMouseEvent"
 #include "QPainter"
 #include "QFileDialog"
+#include "dialogparameters.h"
 
 
 
@@ -37,6 +38,7 @@ private:
 
 private slots:
 
+
     void on_myGridView_clicked(const QModelIndex &index);
 
     void on_pushButton_clicked();
@@ -45,6 +47,7 @@ private slots:
 
     void on_clearButton_clicked();
 
+    void on_paramWindowDestroyed();
     void addAlgorithm();
     void exit();
 
@@ -57,6 +60,8 @@ private:
     int cellsize;
     bool grabbed = false;
     bool isStartOrTargetSelected = false;
+
+    DialogParameters dialogparam;
 
     QStringList slistAlgoNames;
     QStringList slistAlgoDllPaths;
