@@ -31,6 +31,7 @@ void DialogAddParamRow::on_buttonSave_clicked()
 
 void DialogAddParamRow::insertNewParameter()
 {
+    QTableWidgetItem *twi;
     int rowindexToInsert = paramTable->rowCount();
     paramTable->insertRow(rowindexToInsert);
     paramTable->setCellWidget(rowindexToInsert,0,new QLabel(ui->lineParamName->text()));//Insert name
@@ -39,12 +40,14 @@ void DialogAddParamRow::insertNewParameter()
 
     if(selectedType == "Egész"){
         paramTable->setCellWidget(rowindexToInsert,1,new QSpinBox());
+
     }
     else if(selectedType == "Valós"){
         paramTable->setCellWidget(rowindexToInsert,1,new QDoubleSpinBox());
     }
     else if(selectedType == "Lista"){
         QComboBox* cbox = new QComboBox();
+
         QStringList items;
 
         for(int i = 0;i<ui->comboBoxListValues->count();++i){ //Get list values
@@ -53,6 +56,12 @@ void DialogAddParamRow::insertNewParameter()
         cbox->addItems(items);
         paramTable->setCellWidget(rowindexToInsert,1,cbox);
     }
+    else if(selectedType == "Szöveg"){
+        paramTable->setCellWidget(rowindexToInsert,1,new QLineEdit());
+    }
+    twi = new QTableWidgetItem();
+    twi->setText(selectedType);
+    paramTable->setItem(rowindexToInsert,2,twi);
 
 }
 
@@ -95,4 +104,11 @@ void DialogAddParamRow::on_lineParamName_textChanged(const QString &arg1)
 void DialogAddParamRow::on_buttonCancel_clicked()
 {
     close();
+}
+
+void DialogAddParamRow::on_DialogAddParamRow_finished(int result)
+{
+    ui->comboBoxListValues->clear(); //clear text fields
+    ui->lineParamName->clear();
+
 }

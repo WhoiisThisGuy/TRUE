@@ -28,6 +28,8 @@ private slots:
 
     void on_buttonCancel_clicked();
 
+    void on_DialogAddParamRow_finished(int result);
+
 private:
     void insertNewParameter();
 private:

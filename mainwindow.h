@@ -8,12 +8,19 @@
 #include "QPainter"
 #include "QFileDialog"
 #include "dialogparameters.h"
-
-
+#include "ipathfinder.h"
+#include "observerteszt.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+/* Definitions for dll files. */
+
+typedef IPathfinder* (*FUNCPOINTER)();
+//#define procname "InitPathfinderObject"
+
+/* Definitions for dll files end. */
 
 class MainWindow : public QMainWindow
 {
@@ -36,6 +43,9 @@ private:
     bool ReadAlgorithms(); //Read the algortihm names and paths at the start.
     bool InitAlgorithmListWidget();
 
+    void runsearch();
+
+    void loaddll();//load dll file
 private slots:
 
 
@@ -55,19 +65,30 @@ private slots:
 
     void on_widgetListAlgorithms_itemSelectionChanged();
 
+
+
+    void on_buttonRun_clicked();
+
 private:
+    typedef IPathfinder* (*fpointer)(); //define the file pointer
+    fpointer fp = nullptr;
+    IPathfinder* algorithmObject = nullptr; //The object that will do the search
+    ObserverTeszt* gridcontroller = nullptr; //the grid controller
+
+    FUNCPOINTER myFunction; //the dll function pointer
+
     Ui::MainWindow *ui;
+
     int cellsize;
     bool grabbed = false;
     bool isStartOrTargetSelected = false;
 
     DialogParameters dialogparam;
-
     QStringList slistAlgoNames;
     QStringList slistAlgoDllPaths;
 
-    QModelIndex startOrTargetSelectedIndex;
-    QColor startOrTargetSelectedColor;
+    Point startOrTargetSelectedIndex;
+    int startOrTargetSelectedColor;
 
     QColor previousClickedColor;
 
@@ -75,5 +96,6 @@ private:
     QMenu *fileMenu;
     QAction *newAlgoAct;
     QAction *exitAct;
+    vector<string> algorithmRunParameters;
 };
 #endif // MAINWINDOW_H

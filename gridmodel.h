@@ -3,10 +3,15 @@
 #include "QAbstractTableModel"
 #include "QColor"
 #include "QBrush"
+#include "mypoint.h"
 
+//[event_receiver(native)]
 class GridModel : public QAbstractTableModel
 {
+
     Q_OBJECT
+public:
+    char grid[100][100];
 public:
     GridModel(int n,int m);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -16,23 +21,19 @@ public:
     virtual ~GridModel();
 
     void setRowandCols(int a, int b);
+    void setGridValue(int row, int col, int value);
 
     int getGridValueByIndex(const QModelIndex &index);
     int getGridValueByRowCol(int row, int col);
 
     void clearGrid();
 
-private:
-    char grid[100][100];
-
     int numberOfRows; // hányszor
     int numberOfColumns;//hányas
 
-    int numOfStartNode = 0;
-    int numOfTargetNode = 0;
+    Point pStart;
+    Point pTarget;
 
-    QPoint pStart;
-    QPoint pTarget;
 };
 
 #endif // GRIDMODEL_H

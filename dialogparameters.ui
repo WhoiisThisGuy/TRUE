@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>255</width>
-    <height>454</height>
+    <width>595</width>
+    <height>474</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,14 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="3">
+   <item row="1" column="3">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>PushButton</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="4">
     <widget class="QTableWidget" name="tableParameters">
      <property name="selectionMode">
       <enum>QAbstractItemView::MultiSelection</enum>
@@ -54,6 +61,11 @@
      <column>
       <property name="text">
        <string>Érték</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Típus</string>
       </property>
      </column>
     </widget>

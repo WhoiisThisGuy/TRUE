@@ -4,19 +4,22 @@
 #include "dialogaddalgorithm.h"
 #include "QTextStream"
 #include "dialogparameters.h"
+#include "QComboBox"
+#include <iterator>
+#include "windows.h"
+#include "QLibrary"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , cellsize(20)
+    ,dialogparam(this)
 {
 
     ui->setupUi(this);
-
     connect(&dialogparam,&DialogParameters::finished,this,&MainWindow::on_paramWindowDestroyed);
     createActions();
     createMenus();
-
     InitModelView(); //Grid gemoetry setup
 
     InitAlgorithmListWidget(); //load in the list of algorithms
@@ -25,10 +28,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-
-    if(myGridModel) //Safety + clean up
-        delete myGridModel;
     delete ui;
+    disconnect(&dialogparam,&DialogParameters::finished,this,&MainWindow::on_paramWindowDestroyed);
+    //Safety + clean up
+    if(algorithmObject)
+        delete algorithmObject;
+    if(gridcontroller)
+        delete gridcontroller;
+    if(myGridModel)
+        delete myGridModel;
+    if(newAlgoAct)
+        delete newAlgoAct;
+    if(exitAct)
+        delete exitAct;
+
 }
 #ifndef QT_NO_CONTEXTMENU
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
@@ -39,43 +52,60 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 #endif // QT_NO_CONTEXTMENU
 void MainWindow::on_myGridView_clicked(const QModelIndex &index)
 {
-    QVariant qvIndex = myGridModel->data(index,Qt::BackgroundColorRole);
-
-    QColor qcolorIndex = qvIndex.value<QColor>();
+    int cellData = myGridModel->grid[index.column()][index.row()]; //what is in the cell
 
     if(isStartOrTargetSelected){
-
-        if(myGridModel->getGridValueByIndex(index) == 0){
+    int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2;
+        if(cellData != 1 && cellData != oppositeColor){
 
             isStartOrTargetSelected = false;
 
-            myGridModel->setData(index,startOrTargetSelectedColor,Qt::BackgroundColorRole);
             return;
         }
         return;
     }
-    if(qcolorIndex == Qt::white){
-        QColor c = Qt::gray;
-        myGridModel->setData(index,c,Qt::BackgroundColorRole);
+    if(cellData == 0){ //clicked on white cell
+
+        myGridModel->setGridValue(index.row(),index.column(),1); //set gray cell
 
     }
-    else if(qcolorIndex == Qt::gray){
-        QColor c = Qt::white;
-        myGridModel->setData(index,c,Qt::BackgroundColorRole);
+    else if(cellData == 1){//clicked on gray cell
+
+       myGridModel->setGridValue(index.row(),index.column(),0); //set white cell
     }
-    else if(qcolorIndex == Qt::red || qcolorIndex == Qt::green){
+    else if( cellData == 2 || cellData == 3 ){
         if(!isStartOrTargetSelected){
 
             isStartOrTargetSelected = true;
 
-            startOrTargetSelectedIndex = index;
-            startOrTargetSelectedColor = qcolorIndex;
-            QColor c = Qt::white;
-            myGridModel->setData(index, c,Qt::BackgroundColorRole);
+            startOrTargetSelectedIndex.x = index.row();
+            startOrTargetSelectedIndex.y = index.column();
+
+            startOrTargetSelectedColor = cellData;
+
 
             return;
         }
     }
+}
+
+void MainWindow::on_myGridView_entered(const QModelIndex &index)
+{
+
+  if(isStartOrTargetSelected) {
+
+      if(myGridModel->grid[index.column()][index.row()] != 3 && (index.column() != startOrTargetSelectedIndex.y || startOrTargetSelectedIndex.x != index.row()))
+      {
+          myGridModel->setGridValue(startOrTargetSelectedIndex.x,startOrTargetSelectedIndex.y,0);
+          startOrTargetSelectedIndex.x = index.row();
+          startOrTargetSelectedIndex.y = index.column();
+      }
+      myGridModel->setGridValue(index.row(),index.column(),startOrTargetSelectedColor);
+   }
+  else{
+      return;
+  }
+
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -149,6 +179,8 @@ bool MainWindow::ReadAlgorithms()
     }
     else{
         qDebug("Config file not found.");
+        fileopened = false;
+        file.close();
         return false;
     }
 
@@ -168,19 +200,42 @@ bool MainWindow::InitAlgorithmListWidget()
     return true;
 }
 
-
-void MainWindow::on_myGridView_entered(const QModelIndex &index)
+void MainWindow::runsearch()
 {
- QVariant qvarIndex = myGridModel->data(index,Qt::BackgroundColorRole);
+    qDebug("Search start.");
+    if(!gridcontroller){
+        gridcontroller = new ObserverTeszt();
+        gridcontroller->setGridModel(myGridModel);
+    }
 
-  //QColor qcolorIndex = qvarIndex.value<QColor>();
+    if(algorithmObject){
+        algorithmObject->StartSearch(myGridModel->pStart,myGridModel->pTarget,ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
+    }
+    else{
+        qDebug("algorithmObject NOT ok.");
+    }
 
-  if(isStartOrTargetSelected && myGridModel->getGridValueByIndex(index) == 0) {
-        myGridModel->setData(index, startOrTargetSelectedColor,Qt::BackgroundColorRole);
-   }
-  else{
-      return;
-  }
+}
+
+
+
+void MainWindow::loaddll()
+{
+
+    QLibrary myLib("qtdllteszt");
+
+    fp = (fpointer) myLib.resolve("InitPathfinderObject");
+
+    if (fp){
+      gridcontroller = new ObserverTeszt();
+      gridcontroller->setGridModel(myGridModel);
+      qDebug("resolve successful");
+      algorithmObject = fp();
+      algorithmObject->Attach(gridcontroller);
+    }
+    else
+       qDebug("%s",myLib.errorString().toUtf8().constData());
+
 
 }
 
@@ -193,7 +248,10 @@ void MainWindow::on_clearButton_clicked()
 
 void MainWindow::on_paramWindowDestroyed()
 {
+
     ui->buttonParameters->setEnabled(true);
+    ui->buttonRun->setEnabled(false);
+
 }
 
 void MainWindow::addAlgorithm()
@@ -228,16 +286,36 @@ void MainWindow::createActions()
 
 void MainWindow::on_buttonParameters_clicked()
 {
+    dialogparam.loadParamDialogSettings(ui->widgetListAlgorithms->selectedItems().at(0)->text());
     dialogparam.show();
     ui->buttonParameters->setEnabled(false);
-
+    ui->buttonRun->setEnabled(true);
 }
 
 void MainWindow::on_widgetListAlgorithms_itemSelectionChanged()
 {
     QList<QListWidgetItem*> selected = ui->widgetListAlgorithms->selectedItems();
-    if(selected.empty() || dialogparam.isVisible())
+    if(selected.empty()){
         ui->buttonParameters->setEnabled(false);
-    else
+        ui->buttonRun->setEnabled(false);
+    }
+    else{
         ui->buttonParameters->setEnabled(true);
+    }
+}
+
+
+void MainWindow::on_buttonRun_clicked()
+{
+//    dialogparam.setParameters();
+//    algorithmRunParameters = DialogParameters::getParameters();
+//    for(auto x: algorithmRunParameters){
+//        qDebug("param: %s",x.data());
+//    }
+//    qDebug("Got the parameters!");
+
+    if(!fp) //check for different algorithm fp
+        loaddll();
+    runsearch();
+
 }

@@ -19,16 +19,25 @@ SOURCES += \
     dialogaddalgorithm.cpp \
     dialogaddparamrow.cpp \
     dialogparameters.cpp \
+    gridcontroller.cpp \
     gridmodel.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    observerteszt.cpp
 
 HEADERS += \
+    ../../../../c++/Qt/qtdllteszt/imyobserver.h \
+    ../../../../c++/Qt/qtdllteszt/ipathfinder.h \
     dialogaddalgorithm.h \
     dialogaddparamrow.h \
     dialogparameters.h \
+    gridcontroller.h \
     gridmodel.h \
-    mainwindow.h
+    imyobserver.h \
+    ipathfinder.h \
+    mainwindow.h \
+    mypoint.h \
+    observerteszt.h
 
 FORMS += \
     dialogaddalgorithm.ui \
