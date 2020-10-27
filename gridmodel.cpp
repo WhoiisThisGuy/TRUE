@@ -1,19 +1,19 @@
 #include "gridmodel.h"
+#include "Qthread"
 
-GridModel::GridModel(int n,int m) :
-    pStart(0,0)
-  ,pTarget(3,3)
+
+GridModel::GridModel(int row,int col)
 {
-    for(int i = 0;i<n;++i)
-        for(int j = 0;j<m;++j)
-            grid[i][j] = 0; //Minden cella fehér alapból
 
-    //default
-    grid[0][0] = 2; //Start
-    grid[3][3] = 3; //Target
+InitGrid(row,col);
 
-    numberOfRows = n;
-    numberOfColumns = m;
+}
+
+void GridModel::updateView(int row, int col, int val){
+
+    qDebug("Got the signal. Thread gridmodel update thread id: %d",QThread::currentThreadId());
+    setGridValue(row,col,val);
+
 }
 
 int GridModel::rowCount(const QModelIndex &parent) const
@@ -32,7 +32,7 @@ QVariant GridModel::data(const QModelIndex &index, int role) const
     //cellák: 0 - üres, 1 - foglalt, 2 - start, 3 - target, 4 - útvonal része, 5 - megvizsgált
     switch(role){
         case Qt::BackgroundColorRole:{
-            char c = grid[index.column()][index.row()];
+            char c = grid[index.row()*numberOfColumns+index.column()];
             if (c == 0) return QColor(Qt::white);
             else if(c == 1) return QColor(Qt::gray);
             else if(c == 2) return QColor(Qt::green);
@@ -49,7 +49,7 @@ QVariant GridModel::data(const QModelIndex &index, int role) const
 
 bool GridModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    int cellData = grid[index.column()][index.row()];
+    int cellData = grid[index.row()*numberOfColumns+index.column()];
 
     QVector<int> roles;
 
@@ -60,38 +60,38 @@ bool GridModel::setData(const QModelIndex &index, const QVariant &value, int rol
             QColor c = value.value<QColor>();
 
             if(c == Qt::cyan && cellData != 2 && cellData != 3){
-                grid[index.column()][index.row()] = 5;
+                grid[index.row()*numberOfColumns+index.column()] = 5;
 
                 return true;
             }
             else if(c == Qt::blue && cellData != 2 && cellData != 3){
-                grid[index.column()][index.row()] = 4;
+                grid[index.row()*numberOfColumns+index.column()] = 4;
 
                 return true;
             }
 
             else if(c == Qt::white){
-                grid[index.column()][index.row()] = 0;
+                grid[index.row()*numberOfColumns+index.column()] = 0;
 
                 return true;
             }
             else if(c == Qt::gray && cellData != 2 && cellData != 3){
-                grid[index.column()][index.row()] = 1;
+                grid[index.row()*numberOfColumns+index.column()] = 1;
 
                 return true;
 
             }
-            else if(c == Qt::green && grid[index.column()][index.row()] == 0){
+            else if(c == Qt::green && cellData != 1 && cellData != 3){
 
-                grid[index.column()][index.row()] = 2;
+                grid[index.row()*numberOfColumns+index.column()] = 2;
                 pStart.x = index.column();
                 pStart.y = index.row();
 
                 return true;
             }
-            else if(c == Qt::red && grid[index.column()][index.row()] == 0){
+            else if(c == Qt::red && cellData != 1 && cellData != 2){
 
-                grid[index.column()][index.row()] = 3;
+                grid[index.row()*numberOfColumns+index.column()] = 3;
                 pTarget.x = index.column();
                 pTarget.y = index.row();
                 return true;
@@ -102,17 +102,122 @@ bool GridModel::setData(const QModelIndex &index, const QVariant &value, int rol
     return false;
 }
 
+void GridModel::ResizeGrid(int newRow, int newcol)
+{
+
+    if(newRow<numberOfRows){
+
+        removeRows(newRow,numberOfRows-newRow);
+    }
+    if(newRow>numberOfRows){
+        insertRows(numberOfRows,newRow-numberOfRows);
+    }
+    if(newcol<numberOfColumns){
+        removeColumns(newcol,numberOfColumns-newcol);
+    }
+    if(newcol>numberOfColumns){
+        insertColumns(numberOfColumns,newcol-numberOfColumns);
+    }
+    clearGrid();
+    grid[pStart.y*numberOfColumns+pStart.x] = 2;
+    grid[pTarget.y*numberOfColumns+pTarget.x] = 3;
+}
+
+bool GridModel::insertRows(int position, int count, const QModelIndex &parent)
+{
+   beginInsertRows(QModelIndex(), position, position+count-1);
+   int oldsize = numberOfRows*numberOfColumns;
+   numberOfRows +=count;
+   int newsize = numberOfRows*numberOfColumns;
+
+   grid = (int*)realloc(grid,newsize*sizeof(grid));
+
+   void* p = grid+oldsize;
+
+   if(grid){
+       void* p = grid+oldsize;
+       memset(p,0,sizeof(grid)*count*numberOfColumns);
+   }
+
+   endInsertRows();
+
+   return true;
+}
+
+bool GridModel::removeRows(int position, int count, const QModelIndex &parent)
+{
+    beginRemoveRows(QModelIndex(), position, position+count-1);
+    numberOfRows -=count;
+    int newsize = numberOfRows*numberOfColumns;
+
+    grid = (int*)realloc(grid,newsize*sizeof(grid));
+
+    endRemoveRows();
+}
+
+bool GridModel::insertColumns(int position, int count, const QModelIndex &parent)
+{
+    beginInsertColumns(QModelIndex(), position, position+count-1);
+    int oldsize = numberOfRows*numberOfColumns;
+    numberOfColumns +=count;
+    int newsize = numberOfRows*numberOfColumns;
+
+    grid = (int*)realloc(grid,newsize*sizeof(grid));
+    if(grid){
+        void* p = grid+oldsize;
+        memset(p,0,sizeof(grid)*count*numberOfRows);
+    }
+
+    endInsertColumns();
+}
+
+bool GridModel::removeColumns(int position, int count, const QModelIndex &parent)
+{
+    beginRemoveColumns(QModelIndex(), position, position+count-1);
+    numberOfColumns -=count;
+    int newsize = numberOfRows*numberOfColumns;
+
+    grid = (int*)realloc(grid,newsize*sizeof(grid));
+    endRemoveColumns();
+}
+
 GridModel::~GridModel()
 {
-
+    delete[] grid;
 }
 
-void GridModel::setRowandCols(int a, int b)
+void GridModel::InitGrid(int row, int col)
 {
-    numberOfRows = a;
-    numberOfColumns = b;
+    if(row < 2 && col < 2)
+    {
+        qDebug("Wrong grid dimensions, must be atleast 2x2!");
+        return;
+    }
+    pStart.x = 0;
+    pStart.y = 0;
+
+    pTarget.x = 0;
+    pTarget.y = 1;
+
+
+    numberOfRows = row;
+    numberOfColumns = col;
+
+    grid = new int[numberOfRows*numberOfColumns];
+
+    for(int i = 0; i < numberOfRows; ++i)
+        for(int j = 0; j < numberOfColumns; ++j)
+            grid[i*numberOfColumns+j] = 0;
+
+    //default
+    grid[0] = 2; //Start
+    grid[1] = 3; //Target
+
+
 
 }
+
+
 
 void GridModel::setGridValue(int row, int col, int value)
 {
@@ -148,20 +253,20 @@ void GridModel::setGridValue(int row, int col, int value)
 
 int GridModel::getGridValueByIndex(const QModelIndex &index)
 {
-    return grid[index.column()][index.row()];
+    return grid[index.row()*numberOfColumns+index.column()];
 }
 
 int GridModel::getGridValueByRowCol(int row, int col)
 {
-    return grid[row][col];
+    return grid[row*numberOfColumns+col];
 }
 
 void GridModel::clearGrid()
 {
     for(int i = 0;i<numberOfRows;++i)
         for(int j = 0;j<numberOfColumns;++j)
-            if(grid[i][j] != 1 && grid[i][j] != 2 && grid[i][j] != 3){
-                grid[i][j] = 0;
+            if(grid[i*numberOfColumns+j] != 2 && grid[i*numberOfColumns+j] != 3){
+                grid[i*numberOfColumns+j] = 0;
             }
 
     QVector<int> roles;

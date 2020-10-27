@@ -1,11 +1,11 @@
-#ifndef SEARCH_H
-#define SEARCH_H
+#ifndef GRIDCONTROLLER_H
+#define GRIDCONTROLLER_H
 
 
-class Search
+class Gridcontroller
 {
 public:
-    Search();
+    Gridcontroller();
 
     void setGridValue(int row, int col);
     void addToPath(int row, int col);

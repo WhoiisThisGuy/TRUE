@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>595</width>
-    <height>474</height>
+    <width>431</width>
+    <height>546</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,14 +35,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="3">
-    <widget class="QPushButton" name="pushButton">
-     <property name="text">
-      <string>PushButton</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="4">
+   <item row="0" column="0" colspan="3">
     <widget class="QTableWidget" name="tableParameters">
      <property name="selectionMode">
       <enum>QAbstractItemView::MultiSelection</enum>

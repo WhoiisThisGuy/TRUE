@@ -3,17 +3,21 @@
 
 #include "gridmodel.h"
 #include "imyobserver.h"
+#include "mediator.h"
 #include <iostream>
 
 using namespace std;
 
 class ObserverTeszt : public IMyobserver
 {
+
 public:
-    virtual ~ObserverTeszt() { cout << "deleted obsteszt" << endl; }
+    ObserverTeszt(Mediator* m){mediator = m;}
     virtual void setGridValue(int row, int col, int val);
-    void setGridModel(GridModel* mygridmodel_);
+    virtual ~ObserverTeszt() { if(grid) delete[] grid; }
+    void InitGridModel(GridModel* mygridmodel_);
     GridModel* mygridmodel;
+    Mediator* mediator;
 
 };
 #endif

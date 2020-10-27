@@ -20,11 +20,7 @@ public:
     ~DialogAddAlgorithm();
 
 private:
-    bool writeDataConfigFile(const QString& algoname, const QString& filename);
-//        inline bool fileExists (const std::string& name) {
-//            ifstream f(name.c_str());
-//            return f.good();
-//        }
+    bool writeDataConfigFile(const QString& algoname, const QString& filename); //Use QSettings instead!
 
 private slots:
 

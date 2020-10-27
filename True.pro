@@ -23,7 +23,10 @@ SOURCES += \
     gridmodel.cpp \
     main.cpp \
     mainwindow.cpp \
-    observerteszt.cpp
+    mediator.cpp \
+    observerteszt.cpp \
+    worker.cpp \
+    workerthreadcontroller.cpp
 
 HEADERS += \
     ../../../../c++/Qt/qtdllteszt/imyobserver.h \
@@ -36,8 +39,11 @@ HEADERS += \
     imyobserver.h \
     ipathfinder.h \
     mainwindow.h \
+    mediator.h \
     mypoint.h \
-    observerteszt.h
+    observerteszt.h \
+    worker.h \
+    workerthreadcontroller.h
 
 FORMS += \
     dialogaddalgorithm.ui \

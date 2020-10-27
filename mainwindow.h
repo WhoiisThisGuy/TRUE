@@ -10,6 +10,7 @@
 #include "dialogparameters.h"
 #include "ipathfinder.h"
 #include "observerteszt.h"
+#include "workerthreadcontroller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -74,6 +75,9 @@ private:
     fpointer fp = nullptr;
     IPathfinder* algorithmObject = nullptr; //The object that will do the search
     ObserverTeszt* gridcontroller = nullptr; //the grid controller
+    Mediator mediator;
+    DialogParameters dialogparam;
+    WorkerThreadController threadController;
 
     FUNCPOINTER myFunction; //the dll function pointer
 
@@ -83,7 +87,7 @@ private:
     bool grabbed = false;
     bool isStartOrTargetSelected = false;
 
-    DialogParameters dialogparam;
+
     QStringList slistAlgoNames;
     QStringList slistAlgoDllPaths;
 
@@ -93,9 +97,10 @@ private:
     QColor previousClickedColor;
 
     GridModel* myGridModel = nullptr; //Pointer because resizing the grid is solved by creating a new object. Faster than smarter solution.
-    QMenu *fileMenu;
-    QAction *newAlgoAct;
-    QAction *exitAct;
+    QMenu *fileMenu= nullptr;
+    QAction *newAlgoAct= nullptr;
+    QAction *exitAct= nullptr;
     vector<string> algorithmRunParameters;
+
 };
 #endif // MAINWINDOW_H

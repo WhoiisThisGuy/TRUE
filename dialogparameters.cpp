@@ -211,10 +211,5 @@ void DialogParameters::on_DialogParameters_finished(int result)
     for(int i = ui->tableParameters->rowCount();i>=0;--i){ //This does not remove correctly, there will be garbage in the ini file.
         ui->tableParameters->removeRow(i);
     }
-    qDebug("rows removed!");
-}
-
-void DialogParameters::on_pushButton_clicked()
-{
-//
+    //qDebug("rows removed!");
 }

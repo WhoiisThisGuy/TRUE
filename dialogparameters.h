@@ -51,8 +51,6 @@ private slots:
 
     void on_DialogParameters_finished(int result);
 
-    void on_pushButton_clicked();
-
 private:
     void saveParamDialogSettings();
 

@@ -14,22 +14,28 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , cellsize(20)
     ,dialogparam(this)
+    ,threadController(this)
 {
 
     ui->setupUi(this);
     connect(&dialogparam,&DialogParameters::finished,this,&MainWindow::on_paramWindowDestroyed);
+
     createActions();
     createMenus();
     InitModelView(); //Grid gemoetry setup
 
     InitAlgorithmListWidget(); //load in the list of algorithms
+
 }
 
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    disconnect(&dialogparam,&DialogParameters::finished,this,&MainWindow::on_paramWindowDestroyed);
+
+
+    //Thread stops
+
     //Safety + clean up
     if(algorithmObject)
         delete algorithmObject;
@@ -42,6 +48,7 @@ MainWindow::~MainWindow()
     if(exitAct)
         delete exitAct;
 
+
 }
 #ifndef QT_NO_CONTEXTMENU
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
@@ -52,7 +59,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 #endif // QT_NO_CONTEXTMENU
 void MainWindow::on_myGridView_clicked(const QModelIndex &index)
 {
-    int cellData = myGridModel->grid[index.column()][index.row()]; //what is in the cell
+    int cellData = myGridModel->grid[index.row()*myGridModel->numberOfColumns+index.column()]; //what is in the cell
 
     if(isStartOrTargetSelected){
     int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2;
@@ -93,8 +100,10 @@ void MainWindow::on_myGridView_entered(const QModelIndex &index)
 {
 
   if(isStartOrTargetSelected) {
-
-      if(myGridModel->grid[index.column()][index.row()] != 3 && (index.column() != startOrTargetSelectedIndex.y || startOrTargetSelectedIndex.x != index.row()))
+    int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2;
+      if(myGridModel->grid[index.row()*myGridModel->numberOfColumns+index.column()] != oppositeColor
+      && myGridModel->grid[index.row()*myGridModel->numberOfColumns+index.column()] != 1
+      && (index.column() != startOrTargetSelectedIndex.y || startOrTargetSelectedIndex.x != index.row()))
       {
           myGridModel->setGridValue(startOrTargetSelectedIndex.x,startOrTargetSelectedIndex.y,0);
           startOrTargetSelectedIndex.x = index.row();
@@ -110,15 +119,21 @@ void MainWindow::on_myGridView_entered(const QModelIndex &index)
 
 void MainWindow::on_pushButton_clicked()
 {
-    InitModelView();
+    myGridModel->ResizeGrid(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
+    //InitModelView();
+    //myGridModel->InitGrid(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
 }
 
 void MainWindow::InitModelView()
 {
-    if(myGridModel)
+
+    if(myGridModel){
         delete myGridModel;
+        //disconnect(&mediator,&Mediator::changeView,myGridModel,&GridModel::updateView);
+    }
 
     myGridModel = new GridModel(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
+    connect(&mediator,&Mediator::changeView,myGridModel,&GridModel::updateView);
 
     ui->myGridView->setModel(myGridModel);
     ui->myGridView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed); //Fixed cell size
@@ -200,44 +215,7 @@ bool MainWindow::InitAlgorithmListWidget()
     return true;
 }
 
-void MainWindow::runsearch()
-{
-    qDebug("Search start.");
-    if(!gridcontroller){
-        gridcontroller = new ObserverTeszt();
-        gridcontroller->setGridModel(myGridModel);
-    }
 
-    if(algorithmObject){
-        algorithmObject->StartSearch(myGridModel->pStart,myGridModel->pTarget,ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
-    }
-    else{
-        qDebug("algorithmObject NOT ok.");
-    }
-
-}
-
-
-
-void MainWindow::loaddll()
-{
-
-    QLibrary myLib("qtdllteszt");
-
-    fp = (fpointer) myLib.resolve("InitPathfinderObject");
-
-    if (fp){
-      gridcontroller = new ObserverTeszt();
-      gridcontroller->setGridModel(myGridModel);
-      qDebug("resolve successful");
-      algorithmObject = fp();
-      algorithmObject->Attach(gridcontroller);
-    }
-    else
-       qDebug("%s",myLib.errorString().toUtf8().constData());
-
-
-}
 
 void MainWindow::on_clearButton_clicked()
 {
@@ -295,7 +273,7 @@ void MainWindow::on_buttonParameters_clicked()
 void MainWindow::on_widgetListAlgorithms_itemSelectionChanged()
 {
     QList<QListWidgetItem*> selected = ui->widgetListAlgorithms->selectedItems();
-    if(selected.empty()){
+    if(selected.empty() || dialogparam.isVisible()){
         ui->buttonParameters->setEnabled(false);
         ui->buttonRun->setEnabled(false);
     }
@@ -303,7 +281,6 @@ void MainWindow::on_widgetListAlgorithms_itemSelectionChanged()
         ui->buttonParameters->setEnabled(true);
     }
 }
-
 
 void MainWindow::on_buttonRun_clicked()
 {
@@ -314,8 +291,55 @@ void MainWindow::on_buttonRun_clicked()
 //    }
 //    qDebug("Got the parameters!");
 
-    if(!fp) //check for different algorithm fp
+    if(!fp) //implement check for different algorithm fp
         loaddll();
     runsearch();
+
+}
+void MainWindow::runsearch()
+{
+    qDebug("Search start.");
+    if(!gridcontroller){
+        gridcontroller = new ObserverTeszt(&mediator); //this will be used only in the new thread
+
+    }
+    gridcontroller->InitGridModel(myGridModel);//not using in the main thread anymore from this point
+
+    if(algorithmObject){
+        algorithmObject->Attach(gridcontroller);//not using in the main thread anymore from this point
+
+        //From this part a new thread is started
+        //if()
+        qDebug("Mainwindow threadid: %d",QThread::currentThreadId());
+        if(threadController.Init(algorithmObject))
+            threadController.operate(true);//this is on a new thread now
+
+
+    }
+
+    else{
+        qDebug("algorithmObject NOT ok.");
+    }
+
+}
+
+
+
+void MainWindow::loaddll()
+{
+
+    QLibrary myLib("qtdllteszt");
+
+    fp = (fpointer) myLib.resolve("InitPathfinderObject");
+
+    if (fp){
+
+      qDebug("resolve successful");
+      algorithmObject = fp();
+
+    }
+    else
+       qDebug("%s",myLib.errorString().toUtf8().constData());
+
 
 }
