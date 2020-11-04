@@ -2,13 +2,13 @@
 #define OBSTESZT_H
 
 #include "gridmodel.h"
-#include "imyobserver.h"
+#include "iobserver.h"
 #include "mediator.h"
 #include <iostream>
 
 using namespace std;
 
-class ObserverTeszt : public IMyobserver
+class ObserverTeszt : public IObserver
 {
 
 public:

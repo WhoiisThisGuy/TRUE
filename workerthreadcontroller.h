@@ -19,7 +19,7 @@ virtual ~WorkerThreadController() {
         workerThread.wait();
     }
 public slots:
-    void handleResults(const bool&);
+    void handleResults(const int &);
 signals:
     void operate(const bool&);
 };

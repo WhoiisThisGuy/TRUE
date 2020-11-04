@@ -11,7 +11,7 @@ InitGrid(row,col);
 
 void GridModel::updateView(int row, int col, int val){
 
-    qDebug("Got the signal. Thread gridmodel update thread id: %d",QThread::currentThreadId());
+    //qDebug("Got the signal. Thread gridmodel update thread id: %d",QThread::currentThreadId());
     setGridValue(row,col,val);
 
 }
@@ -39,6 +39,10 @@ QVariant GridModel::data(const QModelIndex &index, int role) const
             else if(c == 3) return QColor(Qt::red);
             else if(c == 4) return QColor(Qt::blue);
             else if(c == 5) return QColor(Qt::cyan);
+            else if(c == 6) return QColor(Qt::yellow);
+            else if(c == 7) return QColor(Qt::black);
+            else if(c == 8) return QColor(Qt::magenta);
+            else if(c == 9) return QColor(Qt::darkRed);
         }
          break;
         default:
@@ -94,6 +98,22 @@ bool GridModel::setData(const QModelIndex &index, const QVariant &value, int rol
                 grid[index.row()*numberOfColumns+index.column()] = 3;
                 pTarget.x = index.column();
                 pTarget.y = index.row();
+                return true;
+            }
+            else if(c == Qt::yellow) {
+                grid[index.row()*numberOfColumns+index.column()] = 6;
+                return true;
+            }
+            else if(c == Qt::black) {
+                grid[index.row()*numberOfColumns+index.column()] = 7;
+                return true;
+            }
+            else if(c == Qt::magenta) {
+                grid[index.row()*numberOfColumns+index.column()] = 8;
+                return true;
+            }
+            else if(c == Qt::darkRed) {
+                grid[index.row()*numberOfColumns+index.column()] = 9;
                 return true;
             }
         break;
@@ -244,7 +264,20 @@ void GridModel::setGridValue(int row, int col, int value)
     case 5:
         v.setValue(QColor(Qt::cyan));
         break;
+    case 6:
+        v.setValue(QColor(Qt::yellow));
+        break;
+    case 7:
+        v.setValue(QColor(Qt::black));
+        break;
+    case 8:
+        v.setValue(QColor(Qt::magenta));
+        break;
+    case 9:
+        v.setValue(QColor(Qt::darkRed));
+        break;
     }
+
 
     if(setData(index(row,col),v,Qt::BackgroundColorRole)){
         emit(dataChanged(index(row,col), index(row,col),roles));

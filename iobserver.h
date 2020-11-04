@@ -1,12 +1,15 @@
-#ifndef IMYOBSERVER_H
-#define IMYOBSERVER_H
+#ifndef IObserver_H
+#define IObserver_H
 #include "mypoint.h"
+#include <string>
 
-class IMyobserver
+using std::string;
+
+class IObserver
 {
 public:
-    IMyobserver() {}
-    virtual ~IMyobserver() {if(grid) delete[] grid;}
+    IObserver() {}
+    virtual ~IObserver() {if(grid) delete[] grid;}
     virtual void setGridValue(int row, int col, int val) = 0;
 public:
     int * grid = nullptr;

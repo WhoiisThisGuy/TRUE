@@ -29,14 +29,14 @@ SOURCES += \
     workerthreadcontroller.cpp
 
 HEADERS += \
-    ../../../../c++/Qt/qtdllteszt/imyobserver.h \
+    ../../../../c++/Qt/qtdllteszt/IObserver.h \
     ../../../../c++/Qt/qtdllteszt/ipathfinder.h \
     dialogaddalgorithm.h \
     dialogaddparamrow.h \
     dialogparameters.h \
     gridcontroller.h \
     gridmodel.h \
-    imyobserver.h \
+    iobserver.h \
     ipathfinder.h \
     mainwindow.h \
     mediator.h \

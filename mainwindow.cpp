@@ -12,7 +12,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , cellsize(20)
+    , cellsize(CELLSIZE)
     ,dialogparam(this)
     ,threadController(this)
 {
@@ -298,7 +298,7 @@ void MainWindow::on_buttonRun_clicked()
 }
 void MainWindow::runsearch()
 {
-    qDebug("Search start.");
+
     if(!gridcontroller){
         gridcontroller = new ObserverTeszt(&mediator); //this will be used only in the new thread
 
@@ -311,10 +311,9 @@ void MainWindow::runsearch()
         //From this part a new thread is started
         //if()
         qDebug("Mainwindow threadid: %d",QThread::currentThreadId());
-        if(threadController.Init(algorithmObject))
+        if(threadController.Init(algorithmObject)){
             threadController.operate(true);//this is on a new thread now
-
-
+        }
     }
 
     else{
@@ -328,7 +327,7 @@ void MainWindow::runsearch()
 void MainWindow::loaddll()
 {
 
-    QLibrary myLib("qtdllteszt");
+    QLibrary myLib("AntColonyOptimization");
 
     fp = (fpointer) myLib.resolve("InitPathfinderObject");
 
