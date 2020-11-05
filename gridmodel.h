@@ -12,6 +12,7 @@ class GridModel : public QAbstractTableModel
     Q_OBJECT
 public slots:
     void updateView(int row, int col, int value);
+    void clearGridPathColors();
 public:
     int* grid;
 public:
@@ -38,6 +39,7 @@ public:
     int getGridValueByRowCol(int row, int col);
 
     void clearGrid();
+    void clearGridPaths();
 
     int numberOfRows; // hányszor
     int numberOfColumns;//hányas

@@ -8,9 +8,11 @@ class Mediator : public QObject
 Q_OBJECT
 signals:
      void changeView(int row, int col, int val);
+     void clearColors();
 
 public:
     void updateView(int row,int col,int val);
+    void clearGridColors();
     Mediator();
 
 };

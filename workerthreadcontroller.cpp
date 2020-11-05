@@ -5,8 +5,9 @@ WorkerThreadController::WorkerThreadController(QObject *parent) : QObject(parent
 
 }
 
-bool WorkerThreadController::Init(IPathfinder *p)
+bool WorkerThreadController::Init(IPathfinder *p_)
 {
+    p = p_;
     vector<string> asd;//debug only delete this
     asd.push_back("asd");
     Worker* worker;
@@ -29,5 +30,5 @@ void WorkerThreadController::handleResults(const int &result)
         qDebug("WorkerThreadController: Sikeres keresés. Signal az eredménykiírásra vagy valami...");
     else
         qDebug("WorkerThreadController: Sikertelen keresés.");
-    //worker->quit();
+
 }

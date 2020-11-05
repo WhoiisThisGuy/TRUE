@@ -7,6 +7,11 @@ void ObserverTeszt::setGridValue(int row, int col, int val)
     mediator->updateView(row,col,val); //emits the signal for the main thread to update the view
     return;
 }
+
+void ObserverTeszt::clearPathColors()
+{
+    mediator->clearGridColors();
+}
 void ObserverTeszt::InitGridModel(GridModel *mygridmodel_)
 {
 
@@ -16,7 +21,8 @@ void ObserverTeszt::InitGridModel(GridModel *mygridmodel_)
 
     src = mygridmodel->pStart;
     dst = mygridmodel->pTarget;
-
+    if(grid)
+        delete [] grid;
     grid = new int[numberOfRows*numberOfColumns];
     memcpy(grid,mygridmodel->grid,sizeof(grid)*(numberOfRows*numberOfColumns));
 }

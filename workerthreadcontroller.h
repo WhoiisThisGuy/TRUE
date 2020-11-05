@@ -12,7 +12,7 @@ class WorkerThreadController : public QObject
 public:
     explicit WorkerThreadController(QObject *parent = nullptr);
 
-    bool Init(IPathfinder* p);
+    bool Init(IPathfinder* p_);
 
 virtual ~WorkerThreadController() {
         workerThread.quit();
@@ -22,6 +22,9 @@ public slots:
     void handleResults(const int &);
 signals:
     void operate(const bool&);
+
+public:
+    IPathfinder *p;
 };
 
 #endif // WORKERTHREADCONTROLLER_H

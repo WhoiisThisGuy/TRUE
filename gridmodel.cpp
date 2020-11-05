@@ -16,6 +16,11 @@ void GridModel::updateView(int row, int col, int val){
 
 }
 
+void GridModel::clearGridPathColors()
+{
+    clearGridPaths();
+}
+
 int GridModel::rowCount(const QModelIndex &parent) const
 {
     return numberOfRows;
@@ -298,7 +303,7 @@ void GridModel::clearGrid()
 {
     for(int i = 0;i<numberOfRows;++i)
         for(int j = 0;j<numberOfColumns;++j)
-            if(grid[i*numberOfColumns+j] != 2 && grid[i*numberOfColumns+j] != 3){
+            if(grid[i*numberOfColumns+j] != 0 && grid[i*numberOfColumns+j] != 2 && grid[i*numberOfColumns+j] != 3){
                 grid[i*numberOfColumns+j] = 0;
             }
 
@@ -307,4 +312,18 @@ void GridModel::clearGrid()
 
     emit(dataChanged(index(0,0), index(numberOfRows,numberOfColumns),roles));
 
+}
+
+void GridModel::clearGridPaths()
+{
+    for(int i = 0;i<numberOfRows;++i)
+        for(int j = 0;j<numberOfColumns;++j)
+            if(grid[i*numberOfColumns+j] != 0 && grid[i*numberOfColumns+j] != 1 && grid[i*numberOfColumns+j] != 2 && grid[i*numberOfColumns+j] != 3){
+                grid[i*numberOfColumns+j] = 0;
+            }
+
+    QVector<int> roles;
+    roles.push_back(Qt::BackgroundColorRole);
+
+    emit(dataChanged(index(0,0), index(numberOfRows,numberOfColumns),roles));
 }

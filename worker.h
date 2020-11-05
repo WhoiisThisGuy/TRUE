@@ -13,6 +13,7 @@ public slots:
         /* ... here is the expensive or blocking operation ... */
         //qDebug("Worker: result ready emitting result signal!");
         emit resultReady(result);
+
     }
 public:
 //    bool Init(){

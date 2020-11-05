@@ -3,6 +3,7 @@
 #include "iobserver.h"
 #include <vector>
 #include <string>
+#include "qdebug.h"
 
 using std::vector;
 using std::string;
@@ -10,7 +11,7 @@ using std::string;
 class IPathfinder {
 
 public:
-    virtual ~IPathfinder(){}
+    virtual ~IPathfinder(){qDebug("deleted");}
     virtual int StartSearch() = 0;
     virtual bool Init(vector<string> Parameters) = 0;
     void Attach(IObserver* grindcontroller_) {gridcontroller = grindcontroller_;}

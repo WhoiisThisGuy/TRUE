@@ -134,6 +134,7 @@ void MainWindow::InitModelView()
 
     myGridModel = new GridModel(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
     connect(&mediator,&Mediator::changeView,myGridModel,&GridModel::updateView);
+    connect(&mediator,&Mediator::clearColors,myGridModel,&GridModel::clearGridPathColors);
 
     ui->myGridView->setModel(myGridModel);
     ui->myGridView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed); //Fixed cell size
