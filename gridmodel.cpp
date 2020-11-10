@@ -1,5 +1,7 @@
 #include "gridmodel.h"
 #include "Qthread"
+#include "QFile"
+#include "QTextStream"
 
 
 GridModel::GridModel(int row,int col)
@@ -42,10 +44,10 @@ QVariant GridModel::data(const QModelIndex &index, int role) const
             else if(c == 1) return QColor(Qt::gray);
             else if(c == 2) return QColor(Qt::green);
             else if(c == 3) return QColor(Qt::red);
-            else if(c == 4) return QColor(Qt::blue);
+            else if(c == 4) return QColor(Qt::black);
             else if(c == 5) return QColor(Qt::cyan);
             else if(c == 6) return QColor(Qt::yellow);
-            else if(c == 7) return QColor(Qt::black);
+            else if(c == 7) return QColor(Qt::blue);
             else if(c == 8) return QColor(Qt::magenta);
             else if(c == 9) return QColor(Qt::darkRed);
         }
@@ -73,7 +75,7 @@ bool GridModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
                 return true;
             }
-            else if(c == Qt::blue && cellData != 2 && cellData != 3){
+            else if(c == Qt::black && cellData != 2 && cellData != 3){
                 grid[index.row()*numberOfColumns+index.column()] = 4;
 
                 return true;
@@ -109,7 +111,7 @@ bool GridModel::setData(const QModelIndex &index, const QVariant &value, int rol
                 grid[index.row()*numberOfColumns+index.column()] = 6;
                 return true;
             }
-            else if(c == Qt::black) {
+            else if(c == Qt::blue) {
                 grid[index.row()*numberOfColumns+index.column()] = 7;
                 return true;
             }
@@ -206,6 +208,33 @@ bool GridModel::removeColumns(int position, int count, const QModelIndex &parent
     endRemoveColumns();
 }
 
+bool GridModel::ReadMap()
+{
+
+    QFile file("bridge1.txt");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+                qDebug("REading file NOT OK!");
+                return false;
+        }
+        QTextStream in(&file);
+
+        numberOfRows = in.readLine().toInt(); //row,
+        numberOfColumns = in.readLine().toInt();// col read first
+
+        grid = new int[numberOfRows*numberOfColumns];
+        QString line = in.readLine();
+
+            for(int i = 0;i<numberOfRows;++i)
+            {
+                for(int j= 0;j<numberOfColumns;++j){
+
+                    grid[i*numberOfColumns+j] = line.at(j).digitValue();
+                }
+                line = in.readLine();
+            }
+     return true;
+}
+
 GridModel::~GridModel()
 {
     delete[] grid;
@@ -228,18 +257,15 @@ void GridModel::InitGrid(int row, int col)
     numberOfRows = row;
     numberOfColumns = col;
 
-    grid = new int[numberOfRows*numberOfColumns];
-
-    for(int i = 0; i < numberOfRows; ++i)
-        for(int j = 0; j < numberOfColumns; ++j)
-            grid[i*numberOfColumns+j] = 0;
-
-    //default
-    grid[0] = 2; //Start
-    grid[1] = 3; //Target
-
-
-
+    if(!ReadMap()){
+        grid = new int[numberOfRows*numberOfColumns];
+        for(int i = 0; i < numberOfRows; ++i)
+            for(int j = 0; j < numberOfColumns; ++j)
+                grid[i*numberOfColumns+j] = 0;
+        //default
+        grid[0] = 2; //Start
+        grid[1] = 3; //Target
+    }
 }
 
 
@@ -264,7 +290,7 @@ void GridModel::setGridValue(int row, int col, int value)
         v.setValue(QColor(Qt::red));
         break;
     case 4:
-        v.setValue(QColor(Qt::blue));
+        v.setValue(QColor(Qt::black));
         break;
     case 5:
         v.setValue(QColor(Qt::cyan));
@@ -273,7 +299,7 @@ void GridModel::setGridValue(int row, int col, int value)
         v.setValue(QColor(Qt::yellow));
         break;
     case 7:
-        v.setValue(QColor(Qt::black));
+        v.setValue(QColor(Qt::blue));
         break;
     case 8:
         v.setValue(QColor(Qt::magenta));

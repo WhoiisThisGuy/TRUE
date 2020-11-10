@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-
+    //dialogparam.close();
 
     //Thread stops
 
@@ -98,6 +98,11 @@ void MainWindow::on_myGridView_clicked(const QModelIndex &index)
 
 void MainWindow::on_myGridView_entered(const QModelIndex &index)
 {
+  if(drawingGrey){
+
+      myGridModel->setGridValue(index.row(),index.column(),1);
+
+  }
 
   if(isStartOrTargetSelected) {
     int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2;
@@ -328,7 +333,7 @@ void MainWindow::runsearch()
 void MainWindow::loaddll()
 {
 
-    QLibrary myLib("AntColonyOptimization");
+    QLibrary myLib("qtdllteszt"); //AntColonyOptimization
 
     fp = (fpointer) myLib.resolve("InitPathfinderObject");
 
@@ -342,4 +347,32 @@ void MainWindow::loaddll()
        qDebug("%s",myLib.errorString().toUtf8().constData());
 
 
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QFile file("out.txt");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qDebug("File open for write not ok!");
+    }
+
+    QTextStream out(&file);
+
+    out << myGridModel->numberOfRows<<"\n"<<myGridModel->numberOfColumns<<"\n";
+    for(int i = 0;i<myGridModel->numberOfRows;++i)
+    {
+        for(int j= 0;j<myGridModel->numberOfColumns;++j){
+            out<<myGridModel->getGridValueByRowCol(i,j);
+        }
+        out<<"\n";
+    }
+
+}
+
+void MainWindow::on_drawGreyBox_stateChanged(int arg1)
+{
+    if(arg1 == 0)
+        drawingGrey = false;
+    else if(arg1 == 2)
+        drawingGrey = true;
 }

@@ -23,12 +23,13 @@ bool WorkerThreadController::Init(IPathfinder *p_)
 
 void WorkerThreadController::handleResults(const int &result)
 {
+
     if(result == -1){
         qDebug("WorkerThreadController: result = -1");
     }
-    else if(result == 1)
-        qDebug("WorkerThreadController: Sikeres keresés. Signal az eredménykiírásra vagy valami...");
-    else
-        qDebug("WorkerThreadController: Sikertelen keresés.");
+    //else if(result == 1)
+        //qDebug("WorkerThreadController: Sikeres keresés. Signal az eredménykiírásra vagy valami...");
+    else if(result != 0)
+       qDebug("WorkerThreadController: Sikertelen keresés.");
 
 }

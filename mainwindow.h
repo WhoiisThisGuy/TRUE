@@ -12,7 +12,7 @@
 #include "observerteszt.h"
 #include "workerthreadcontroller.h"
 
-#define CELLSIZE 20
+#define CELLSIZE 13
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -72,6 +72,10 @@ private slots:
 
     void on_buttonRun_clicked();
 
+    void on_pushButton_2_clicked();
+
+    void on_drawGreyBox_stateChanged(int arg1);
+
 private:
     typedef IPathfinder* (*fpointer)(); //define the file pointer
     fpointer fp = nullptr;
@@ -89,6 +93,8 @@ private:
     bool grabbed = false;
     bool isStartOrTargetSelected = false;
 
+    /* FOR DEBUG ONLY */
+    bool drawingGrey = false;
 
     QStringList slistAlgoNames;
     QStringList slistAlgoDllPaths;

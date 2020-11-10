@@ -26,6 +26,7 @@ public:
     virtual bool removeRows(int position, int count, const QModelIndex &parent = QModelIndex())override;
     virtual bool insertColumns(int position, int count, const QModelIndex &parent = QModelIndex())override;
     virtual bool removeColumns(int position, int count, const QModelIndex &parent = QModelIndex())override;
+    bool ReadMap();
 
     virtual ~GridModel();
 

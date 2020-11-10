@@ -2,6 +2,7 @@
 #define WORKERTHREADCONTROLLER_H
 
 #include <QObject>
+
 #include "worker.h"
 
 class WorkerThreadController : public QObject
@@ -25,6 +26,8 @@ signals:
 
 public:
     IPathfinder *p;
+
+
 };
 
 #endif // WORKERTHREADCONTROLLER_H
