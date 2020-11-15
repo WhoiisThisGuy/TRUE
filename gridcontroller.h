@@ -1,18 +1,24 @@
-#ifndef GRIDCONTROLLER_H
-#define GRIDCONTROLLER_H
+#ifndef OBSTESZT_H
+#define OBSTESZT_H
 
+#include "gridmodel.h"
+#include "iobserver.h"
+#include "mediator.h"
+#include <iostream>
 
-class Gridcontroller
+using namespace std;
+
+class Gridcontroller : public IObserver
 {
+
 public:
-    Gridcontroller();
+    Gridcontroller(Mediator* m){mediator = m;}
+    void setGridValue(int row, int col, int val) override;
+    void clearPathColors() override;
+    virtual ~Gridcontroller() { if(grid) delete[] grid; }
+    void InitGridModel(GridModel* mygridmodel_);
+    GridModel* mygridmodel;
+    Mediator* mediator;
 
-    void setGridValue(int row, int col);
-    void addToPath(int row, int col);
-    void markAsVisited(int row, int col);
-
-    int getGridValue(int row, int col);
-    bool isVisited(int row, int col);
 };
-
-#endif // SEARCH_H
+#endif

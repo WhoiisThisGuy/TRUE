@@ -4,10 +4,8 @@
 #include "QTextStream"
 
 
-GridModel::GridModel(int row,int col)
+GridModel::GridModel()
 {
-
-InitGrid(row,col);
 
 }
 
@@ -180,6 +178,8 @@ bool GridModel::removeRows(int position, int count, const QModelIndex &parent)
     grid = (int*)realloc(grid,newsize*sizeof(grid));
 
     endRemoveRows();
+
+    return true;
 }
 
 bool GridModel::insertColumns(int position, int count, const QModelIndex &parent)
@@ -196,6 +196,8 @@ bool GridModel::insertColumns(int position, int count, const QModelIndex &parent
     }
 
     endInsertColumns();
+
+    return true;
 }
 
 bool GridModel::removeColumns(int position, int count, const QModelIndex &parent)
@@ -206,12 +208,14 @@ bool GridModel::removeColumns(int position, int count, const QModelIndex &parent
 
     grid = (int*)realloc(grid,newsize*sizeof(grid));
     endRemoveColumns();
+
+    return true;
 }
 
 bool GridModel::ReadMap()
 {
 
-    QFile file("bridge1.txt");
+    QFile file("manhattan.txt");
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
                 qDebug("REading file NOT OK!");
                 return false;

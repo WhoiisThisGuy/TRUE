@@ -1,30 +1,31 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "QMessageBox"
-#include "dialogaddalgorithm.h"
 #include "QTextStream"
-#include "dialogparameters.h"
 #include "QComboBox"
-#include <iterator>
-#include "windows.h"
 #include "QLibrary"
+
+#include "dialogaddalgorithm.h"
+#include "dialogparameters.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , cellsize(CELLSIZE)
     ,dialogparam(this)
     ,threadController(this)
 {
 
     ui->setupUi(this);
+
+    myGridModel.InitGrid(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value()); //Create grid array
+    InitModelView(); //Table gemoetry setup
+
     connect(&dialogparam,&DialogParameters::finished,this,&MainWindow::on_paramWindowDestroyed);
 
-    createActions();
-    createMenus();
-    InitModelView(); //Grid gemoetry setup
+    CreateActions();
+    CreateMenus();
 
-    InitAlgorithmListWidget(); //load in the list of algorithms
+    ReadAlgorithms(); //load in the list of algorithms
 
 }
 
@@ -32,17 +33,12 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-    //dialogparam.close();
 
-    //Thread stops
-
-    //Safety + clean up
+    //clean up
     if(algorithmObject)
         delete algorithmObject;
     if(gridcontroller)
         delete gridcontroller;
-    if(myGridModel)
-        delete myGridModel;
     if(newAlgoAct)
         delete newAlgoAct;
     if(exitAct)
@@ -59,97 +55,79 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 #endif // QT_NO_CONTEXTMENU
 void MainWindow::on_myGridView_clicked(const QModelIndex &index)
 {
-    int cellData = myGridModel->grid[index.row()*myGridModel->numberOfColumns+index.column()]; //what is in the cell
+    int cellData = myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()]; //what is in the cell
 
+    //Place the start or target node if it is selected
     if(isStartOrTargetSelected){
-    int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2;
+
+     int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2;
         if(cellData != 1 && cellData != oppositeColor){
 
             isStartOrTargetSelected = false;
+            //on_myGridView_entered function sets the position
 
             return;
         }
         return;
     }
+
     if(cellData == 0){ //clicked on white cell
 
-        myGridModel->setGridValue(index.row(),index.column(),1); //set gray cell
+        myGridModel.setGridValue(index.row(),index.column(),1); //set gray cell
 
     }
     else if(cellData == 1){//clicked on gray cell
 
-       myGridModel->setGridValue(index.row(),index.column(),0); //set white cell
+       myGridModel.setGridValue(index.row(),index.column(),0); //set white cell
     }
     else if( cellData == 2 || cellData == 3 ){
-        if(!isStartOrTargetSelected){
 
-            isStartOrTargetSelected = true;
+        isStartOrTargetSelected = true;
+        startOrTargetSelectedIndex.x = index.row();
+        startOrTargetSelectedIndex.y = index.column();
+        startOrTargetSelectedColor = cellData;
 
-            startOrTargetSelectedIndex.x = index.row();
-            startOrTargetSelectedIndex.y = index.column();
-
-            startOrTargetSelectedColor = cellData;
-
-
-            return;
-        }
+        return;
     }
 }
 
 void MainWindow::on_myGridView_entered(const QModelIndex &index)
 {
-  if(drawingGrey){
-
-      myGridModel->setGridValue(index.row(),index.column(),1);
-
-  }
 
   if(isStartOrTargetSelected) {
     int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2;
-      if(myGridModel->grid[index.row()*myGridModel->numberOfColumns+index.column()] != oppositeColor
-      && myGridModel->grid[index.row()*myGridModel->numberOfColumns+index.column()] != 1
-      && (index.column() != startOrTargetSelectedIndex.y || startOrTargetSelectedIndex.x != index.row()))
+      if(myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()] != oppositeColor
+      && myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()] != 1
+      && (index.column() != startOrTargetSelectedIndex.y || startOrTargetSelectedIndex.x != index.row())) //if cursor moved in a different cell
       {
-          myGridModel->setGridValue(startOrTargetSelectedIndex.x,startOrTargetSelectedIndex.y,0);
+          myGridModel.setGridValue(startOrTargetSelectedIndex.x,startOrTargetSelectedIndex.y,0);
           startOrTargetSelectedIndex.x = index.row();
           startOrTargetSelectedIndex.y = index.column();
       }
-      myGridModel->setGridValue(index.row(),index.column(),startOrTargetSelectedColor);
+      myGridModel.setGridValue(index.row(),index.column(),startOrTargetSelectedColor);
    }
-  else{
-      return;
-  }
-
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_resizeButton_clicked()
 {
-    myGridModel->ResizeGrid(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
-    //InitModelView();
-    //myGridModel->InitGrid(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
+    myGridModel.ResizeGrid(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
 }
 
 void MainWindow::InitModelView()
 {
 
-    if(myGridModel){
-        delete myGridModel;
-        //disconnect(&mediator,&Mediator::changeView,myGridModel,&GridModel::updateView);
-    }
+    connect(&mediator,&Mediator::changeView,&myGridModel,&GridModel::updateView);
+    connect(&mediator,&Mediator::clearColors,&myGridModel,&GridModel::clearGridPathColors);
 
-    myGridModel = new GridModel(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
-    connect(&mediator,&Mediator::changeView,myGridModel,&GridModel::updateView);
-    connect(&mediator,&Mediator::clearColors,myGridModel,&GridModel::clearGridPathColors);
-
-    ui->myGridView->setModel(myGridModel);
+    ui->myGridView->setModel(&myGridModel);
     ui->myGridView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed); //Fixed cell size
     ui->myGridView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed); //Fixed cell size
 
     int viewWidth;
     int viewHeight;
 
-    viewWidth = cellsize * (ui->numberOfColumnsBox->value()+2);
-    viewHeight = cellsize * (ui->numberOfRowsBox->value()+2);
+    viewWidth = cellsize * (ui->numberOfColumnsBox->value());
+    viewHeight = cellsize * (ui->numberOfRowsBox->value());
 
     QRect rect = ui->myGridView->geometry();
 
@@ -158,12 +136,13 @@ void MainWindow::InitModelView()
 
     ui->myGridView->setGeometry(rect);
     ui->myGridView->show();
+
+    ui->numberOfRowsBox->setValue(myGridModel.numberOfRows);
+    ui->numberOfColumnsBox->setValue(myGridModel.numberOfColumns);
 }
 
 void MainWindow::AddAlgorithmToFile(const QString& string)
 {
-
-
     QFile file(CFGPATH);
 
     if (!file.open(QIODevice::ReadOnly)) {
@@ -172,18 +151,17 @@ void MainWindow::AddAlgorithmToFile(const QString& string)
          return;
      }
 
+
 }
 
-bool MainWindow::ReadAlgorithms()
+void MainWindow::ReadAlgorithms()
 {
     QFile file(CFGPATH);
-    bool fileopened = false;
-    if(file.exists()){
-    //if file exists check if the algoname is already in the text
 
+    if(file.exists()){
         if (file.open(QIODevice::ReadOnly))
         {
-            fileopened = true;
+
             QTextStream in(&file);
             QStringList stringTokens;
             while (!in.atEnd()) {
@@ -192,6 +170,9 @@ bool MainWindow::ReadAlgorithms()
                 slistAlgoDllPaths.push_back(stringTokens[1]);
                 stringTokens.clear();
             }
+            //Success
+            ui->widgetListAlgorithms->addItems(slistAlgoNames);
+            return;
 
         }
         else{
@@ -200,33 +181,18 @@ bool MainWindow::ReadAlgorithms()
     }
     else{
         qDebug("Config file not found.");
-        fileopened = false;
+
         file.close();
-        return false;
+        return;
     }
-
-    fileopened = false;
     file.close();
-    return true;
+    return;
 }
-
-bool MainWindow::InitAlgorithmListWidget()
-{
-    if(!ReadAlgorithms()){
-        qDebug("Reading config file failed.");
-        return false;
-    }
-    ui->widgetListAlgorithms->addItems(slistAlgoNames);
-
-    return true;
-}
-
-
 
 void MainWindow::on_clearButton_clicked()
 {
 
-    myGridModel->clearGrid();
+    myGridModel.clearGrid();
 
 }
 
@@ -249,7 +215,7 @@ void MainWindow::exit()
     close();
 }
 
-void MainWindow::createMenus()
+void MainWindow::CreateMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&Fájl"));
     fileMenu->addAction(newAlgoAct);
@@ -257,7 +223,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(exitAct);
 }
 
-void MainWindow::createActions()
+void MainWindow::CreateActions()
 {
     newAlgoAct = new QAction(tr("&Új algoritmus"), this);
     newAlgoAct->setStatusTip(tr("Új algoritmus felvétele a listába."));
@@ -279,12 +245,13 @@ void MainWindow::on_buttonParameters_clicked()
 void MainWindow::on_widgetListAlgorithms_itemSelectionChanged()
 {
     QList<QListWidgetItem*> selected = ui->widgetListAlgorithms->selectedItems();
-    if(selected.empty() || dialogparam.isVisible()){
-        ui->buttonParameters->setEnabled(false);
-        ui->buttonRun->setEnabled(false);
+    if(!dialogparam.isVisible() && !selected.empty()){
+        ui->buttonParameters->setEnabled(true);
+        ui->buttonRun->setEnabled(true);
     }
     else{
-        ui->buttonParameters->setEnabled(true);
+        ui->buttonParameters->setEnabled(false);
+        ui->buttonRun->setEnabled(false);
     }
 }
 
@@ -298,42 +265,37 @@ void MainWindow::on_buttonRun_clicked()
 //    qDebug("Got the parameters!");
 
     if(!fp) //implement check for different algorithm fp
-        loaddll();
-    runsearch();
+        LoaddllFile();
+    StartSearch();
 
 }
-void MainWindow::runsearch()
+void MainWindow::StartSearch()
 {
 
     if(!gridcontroller){
-        gridcontroller = new ObserverTeszt(&mediator); //this will be used only in the new thread
+        gridcontroller = new Gridcontroller(&mediator); //this will be used only in the new thread
 
     }
-    gridcontroller->InitGridModel(myGridModel);//not using in the main thread anymore from this point
+    gridcontroller->InitGridModel(&myGridModel);//not using in the main thread anymore from this point
 
     if(algorithmObject){
         algorithmObject->Attach(gridcontroller);//not using in the main thread anymore from this point
 
         //From this part a new thread is started
-        //if()
         qDebug("Mainwindow threadid: %d",QThread::currentThreadId());
         if(threadController.Init(algorithmObject)){
             threadController.operate(true);//this is on a new thread now
         }
     }
 
-    else{
-        qDebug("algorithmObject NOT ok.");
-    }
-
 }
 
 
 
-void MainWindow::loaddll()
+void MainWindow::LoaddllFile()
 {
 
-    QLibrary myLib("qtdllteszt"); //AntColonyOptimization
+    QLibrary myLib("dllteszt"); //AntColonyOptimization,qtdllteszt,Astar
 
     fp = (fpointer) myLib.resolve("InitPathfinderObject");
 
@@ -341,6 +303,8 @@ void MainWindow::loaddll()
 
       qDebug("resolve successful");
       algorithmObject = fp();
+      if(!algorithmObject)
+           qDebug("algorithmObject NOT ok.");
 
     }
     else
@@ -358,21 +322,13 @@ void MainWindow::on_pushButton_2_clicked()
 
     QTextStream out(&file);
 
-    out << myGridModel->numberOfRows<<"\n"<<myGridModel->numberOfColumns<<"\n";
-    for(int i = 0;i<myGridModel->numberOfRows;++i)
+    out << myGridModel.numberOfRows<<"\n"<<myGridModel.numberOfColumns<<"\n";
+    for(int i = 0;i<myGridModel.numberOfRows;++i)
     {
-        for(int j= 0;j<myGridModel->numberOfColumns;++j){
-            out<<myGridModel->getGridValueByRowCol(i,j);
+        for(int j= 0;j<myGridModel.numberOfColumns;++j){
+            out<<myGridModel.getGridValueByRowCol(i,j);
         }
         out<<"\n";
     }
 
-}
-
-void MainWindow::on_drawGreyBox_stateChanged(int arg1)
-{
-    if(arg1 == 0)
-        drawingGrey = false;
-    else if(arg1 == 2)
-        drawingGrey = true;
 }

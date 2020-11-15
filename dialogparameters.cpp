@@ -5,6 +5,7 @@
 #include "QSpinBox"
 #include "QDoubleSpinBox"
 #include "QLineEdit"
+#include "QFile"
 
 vector<string> DialogParameters::algorithmRunParameters;
 
@@ -29,18 +30,13 @@ DialogParameters::~DialogParameters()
 void DialogParameters::loadParamDialogSettings(QString name)
 {
     nameOfAlgorithm = name;
-//load settings only if algoname_dialogsettings.ini file exists
-
-    QFile file(nameOfAlgorithm+"_dialogsettings.ini");
-
-    if(!file.exists()) return;
 
     QTableWidgetItem* twi;
     QString sclassname;
 
     QSettings settings(nameOfAlgorithm+"_dialogsettings.ini",QSettings::IniFormat);
 
-    int size= settings.beginReadArray("rowdata");
+    int size= settings.beginReadArray("parameters");
     for(int i = 0;i<size;++i){ //Save the label name and the widget class first.
         ui->tableParameters->insertRow(i);
         settings.setArrayIndex(i);
@@ -101,7 +97,7 @@ void DialogParameters::setParameters()
     for(int i = 0;i<rowcount;++i){
 
 
-        label = (QLabel*)ui->tableParameters->cellWidget(i,0);
+        label = dynamic_cast<QLabel*>(ui->tableParameters->cellWidget(i,0));
 
         wti = ui->tableParameters->item(i,2);
         sclassname = wti->text().toStdString();
@@ -149,7 +145,7 @@ void DialogParameters::on_buttonDelete_clicked()
     QModelIndexList selected = ui->tableParameters->selectionModel()->selectedRows();
     QSettings settings(nameOfAlgorithm+"_dialogsettings.ini",QSettings::IniFormat);
 
-    settings.beginReadArray("rowdata");
+    settings.beginReadArray("parameters");
     for(int i = 0;i<selected.count();++i){ //This does not remove correctly, there will be garbage in the ini file.
         settings.setArrayIndex(selected.at(i).row());
         settings.remove("label");
@@ -172,14 +168,14 @@ void DialogParameters::saveParamDialogSettings()
     QSettings settings(nameOfAlgorithm+"_dialogsettings.ini",QSettings::IniFormat);
     //save settings only if table has any items
     if(ui->tableParameters->rowCount()==0){
-        settings.beginWriteArray("rowdata",0);
+        settings.beginWriteArray("parameters",0);
         settings.endArray();
         return;
     }
     QTableWidgetItem* wit;
     QString sclassname;
     QLabel* label;
-    settings.beginWriteArray("rowdata");
+    settings.beginWriteArray("parameters");
     for(int i = 0;i<ui->tableParameters->rowCount();++i){ //Save the label name and the widget type first.
         settings.setArrayIndex(i);
         label = (QLabel*)ui->tableParameters->cellWidget(i,0);
@@ -208,7 +204,7 @@ void DialogParameters::saveParamDialogSettings()
 void DialogParameters::on_DialogParameters_finished(int result)
 {
 
-    for(int i = ui->tableParameters->rowCount();i>=0;--i){ //This does not remove correctly, there will be garbage in the ini file.
+    for(int i = ui->tableParameters->rowCount();i>=0;--i){
         ui->tableParameters->removeRow(i);
     }
     //qDebug("rows removed!");

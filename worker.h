@@ -10,7 +10,6 @@ class Worker : public QObject
 public slots:
     void doSearch() {
         timer.start();
-        qDebug("Timer started!");
         int result = pathfinderobject->StartSearch();
         //qDebug("Workerthread threadid: %d",QThread::currentThreadId());
         /* ... here is the expensive or blocking operation ... */
@@ -24,12 +23,9 @@ public slots:
 
     }
 public:
-//    bool Init(){
-//        bool result = pathfinderobject->Init();
-//        return result;
-//    }
+
     Worker(IPathfinder* p);
-    virtual ~ Worker() {}
+    virtual ~ Worker() { qDebug("Worker deleted.");}
 public:
     IPathfinder* pathfinderobject;
     QElapsedTimer timer;

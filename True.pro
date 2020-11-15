@@ -24,7 +24,6 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mediator.cpp \
-    observerteszt.cpp \
     worker.cpp \
     workerthreadcontroller.cpp
 
@@ -41,7 +40,6 @@ HEADERS += \
     mainwindow.h \
     mediator.h \
     mypoint.h \
-    observerteszt.h \
     worker.h \
     workerthreadcontroller.h
 
@@ -55,3 +53,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    ../../../../c++/dllteszt/Debug/dllteszt.dll

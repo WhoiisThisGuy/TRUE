@@ -20,32 +20,23 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>T.R.U.E</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_5">
-    <item row="0" column="1">
-     <widget class="QFrame" name="frame">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
+    <item row="0" column="1" rowspan="2">
+     <widget class="QGroupBox" name="groupBox_3">
       <property name="maximumSize">
        <size>
-        <width>300</width>
-        <height>400</height>
+        <width>200</width>
+        <height>280</height>
        </size>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+      <property name="title">
+       <string>Algoritmus Lista</string>
       </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="2" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
         <widget class="QListWidget" name="widgetListAlgorithms">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -55,8 +46,8 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>300</width>
-           <height>400</height>
+           <width>200</width>
+           <height>200</height>
           </size>
          </property>
          <property name="editTriggers">
@@ -67,52 +58,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Algoritmus lista</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QGroupBox" name="groupBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Algoritmus irányítása</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
+       <item>
         <widget class="QPushButton" name="buttonParameters">
          <property name="enabled">
           <bool>false</bool>
@@ -125,34 +71,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>300</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>13</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Paraméterek</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="buttonRun">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
@@ -162,14 +81,14 @@
           </font>
          </property>
          <property name="text">
-          <string>Futtatás</string>
+          <string>Paraméterek</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="3" column="1">
+    <item row="2" column="1">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -179,7 +98,7 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>300</width>
+        <width>250</width>
         <height>16777215</height>
        </size>
       </property>
@@ -187,46 +106,19 @@
        <string>Négyzetrács</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
+       <item row="3" column="2">
+        <widget class="QLineEdit" name="mapName">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="maximumSize">
           <size>
-           <width>300</width>
+           <width>200</width>
            <height>16777215</height>
           </size>
-         </property>
-         <property name="text">
-          <string>Négyzetrács sorok</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="pushButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Méretezés</string>
          </property>
         </widget>
        </item>
@@ -240,36 +132,12 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>300</width>
+           <width>200</width>
            <height>16777215</height>
           </size>
          </property>
          <property name="text">
           <string>Pálya mentése</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QPushButton" name="clearButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Tisztítás</string>
          </property>
         </widget>
        </item>
@@ -283,17 +151,17 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>300</width>
+           <width>200</width>
            <height>16777215</height>
           </size>
          </property>
          <property name="text">
-          <string>Négyzetrács oszlopok</string>
+          <string>Oszlopok száma</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QSpinBox" name="numberOfColumnsBox">
+       <item row="2" column="2">
+        <widget class="QPushButton" name="clearButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -302,22 +170,77 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>300</width>
+           <width>200</width>
            <height>16777215</height>
           </size>
          </property>
-         <property name="minimum">
-          <number>2</number>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
          </property>
-         <property name="maximum">
-          <number>100</number>
-         </property>
-         <property name="value">
-          <number>30</number>
+         <property name="text">
+          <string>Tisztítás</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Sorok száma</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="resizeButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Méretezés</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLabel" name="label_3">
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Név:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
         <widget class="QSpinBox" name="numberOfRowsBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -327,7 +250,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>300</width>
+           <width>200</width>
            <height>16777215</height>
           </size>
          </property>
@@ -342,26 +265,119 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
-        <widget class="QLineEdit" name="mapName">
+       <item row="1" column="2">
+        <widget class="QSpinBox" name="numberOfColumnsBox">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="maximumSize">
           <size>
-           <width>300</width>
+           <width>200</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="minimum">
+          <number>2</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>30</number>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="0" rowspan="4">
+    <item row="3" column="1">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>250</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Keresés</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="3" column="0">
+        <widget class="QPushButton" name="buttonRun">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Futtatás</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QPushButton" name="pushButton_4">
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Eredmény</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Leállítás</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="0" rowspan="7">
      <widget class="QScrollArea" name="scrollArea">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -383,8 +399,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1055</width>
-         <height>784</height>
+         <width>1105</width>
+         <height>864</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
@@ -486,13 +502,6 @@
       </widget>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QCheckBox" name="drawGreyBox">
-      <property name="text">
-       <string>CheckBox</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -501,7 +510,7 @@
      <x>0</x>
      <y>0</y>
      <width>1381</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

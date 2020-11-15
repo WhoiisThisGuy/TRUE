@@ -2,14 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "gridmodel.h"
 #include "QVariant"
 #include "QMouseEvent"
-#include "QPainter"
 #include "QFileDialog"
+
+#include "gridmodel.h"
 #include "dialogparameters.h"
 #include "ipathfinder.h"
-#include "observerteszt.h"
+#include "gridcontroller.h"
 #include "workerthreadcontroller.h"
 
 #define CELLSIZE 13
@@ -20,8 +20,8 @@ QT_END_NAMESPACE
 
 /* Definitions for dll files. */
 
-typedef IPathfinder* (*FUNCPOINTER)();
-//#define procname "InitPathfinderObject"
+typedef IPathfinder* (*fpointer)();
+#define procname "InitPathfinderObject"
 
 /* Definitions for dll files end. */
 
@@ -39,72 +39,66 @@ protected:
 #endif // QT_NO_CONTEXTMENU
 
 private:
-    void createMenus();
-    void createActions();
+
+    void CreateMenus();
+    void CreateActions();
     void InitModelView();
     void AddAlgorithmToFile(const QString& string);
-    bool ReadAlgorithms(); //Read the algortihm names and paths at the start.
-    bool InitAlgorithmListWidget();
+    void ReadAlgorithms(); //
+    void StartSearch();
+    void LoaddllFile(); //Loads the dll file and gets the IPathfinder object
 
-    void runsearch();
-
-    void loaddll();//load dll file
 private slots:
 
 
     void on_myGridView_clicked(const QModelIndex &index);
 
-    void on_pushButton_clicked();
+    void on_resizeButton_clicked();
 
     void on_myGridView_entered(const QModelIndex &index);
 
     void on_clearButton_clicked();
 
     void on_paramWindowDestroyed();
-    void addAlgorithm();
+
     void exit();
 
     void on_buttonParameters_clicked();
 
     void on_widgetListAlgorithms_itemSelectionChanged();
 
-
-
     void on_buttonRun_clicked();
 
     void on_pushButton_2_clicked();
 
-    void on_drawGreyBox_stateChanged(int arg1);
+    void addAlgorithm();
 
 private:
-    typedef IPathfinder* (*fpointer)(); //define the file pointer
-    fpointer fp = nullptr;
-    IPathfinder* algorithmObject = nullptr; //The object that will do the search
-    ObserverTeszt* gridcontroller = nullptr; //the grid controller
-    Mediator mediator;
+
+    /*Init list start */
+    Ui::MainWindow *ui;
     DialogParameters dialogparam;
     WorkerThreadController threadController;
+    /*Init list end */
 
-    FUNCPOINTER myFunction; //the dll function pointer
+    GridModel myGridModel; //contains the grid data
 
-    Ui::MainWindow *ui;
+    int cellsize = CELLSIZE;
 
-    int cellsize;
-    bool grabbed = false;
-    bool isStartOrTargetSelected = false;
-
-    /* FOR DEBUG ONLY */
-    bool drawingGrey = false;
+    fpointer fp = nullptr; //dll function pointer
+    IPathfinder* algorithmObject = nullptr; //The dll algorithm object
+    Gridcontroller* gridcontroller = nullptr; //the grid controller
+    Mediator mediator;
 
     QStringList slistAlgoNames;
     QStringList slistAlgoDllPaths;
 
+    /* For moving start and end points with cursor */
     Point startOrTargetSelectedIndex;
     int startOrTargetSelectedColor;
-
     QColor previousClickedColor;
+    bool isStartOrTargetSelected = false;
 
-    GridModel* myGridModel = nullptr; //Pointer because resizing the grid is solved by creating a new object. Faster than smarter solution.
     QMenu *fileMenu= nullptr;
     QAction *newAlgoAct= nullptr;
     QAction *exitAct= nullptr;
