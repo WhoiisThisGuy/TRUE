@@ -150,43 +150,23 @@ void MainWindow::AddAlgorithmToFile(const QString& string)
             file.errorString());
          return;
      }
-
-
 }
 
 void MainWindow::ReadAlgorithms()
 {
-    QFile file(CFGPATH);
+   QSettings settings(CFGPATH,QSettings::IniFormat);
 
-    if(file.exists()){
-        if (file.open(QIODevice::ReadOnly))
-        {
+   QStringList algoNameList = settings.childKeys();
 
-            QTextStream in(&file);
-            QStringList stringTokens;
-            while (!in.atEnd()) {
-                stringTokens+=in.readLine().split("=");
-                slistAlgoNames.push_back(stringTokens[0]);
-                slistAlgoDllPaths.push_back(stringTokens[1]);
-                stringTokens.clear();
-            }
-            //Success
-            ui->widgetListAlgorithms->addItems(slistAlgoNames);
-            return;
+   int size = algoNameList.size();
 
-        }
-        else{
-            qDebug("Could not open file for reading.");
-        }
-    }
-    else{
-        qDebug("Config file not found.");
+   for (int i = 0; i < size; ++i) {
 
-        file.close();
-        return;
-    }
-    file.close();
-    return;
+       slistAlgoDllPaths.push_back(settings.value(algoNameList.at(i)).toString()); //Store all dll path
+   }
+
+    ui->widgetListAlgorithms->addItems(algoNameList); //Set the algo name list
+
 }
 
 void MainWindow::on_clearButton_clicked()
@@ -206,7 +186,10 @@ void MainWindow::on_paramWindowDestroyed()
 
 void MainWindow::addAlgorithm()
 {
-    DialogAddAlgorithm dialog(this);
+    ui->buttonParameters->setEnabled(false);
+    ui->buttonRun->setEnabled(false);
+    ui->buttonDeleteParam->setEnabled(false);
+    DialogAddAlgorithm dialog(this,ui->widgetListAlgorithms,&slistAlgoDllPaths);
     dialog.exec();
 }
 
@@ -248,10 +231,12 @@ void MainWindow::on_widgetListAlgorithms_itemSelectionChanged()
     if(!dialogparam.isVisible() && !selected.empty()){
         ui->buttonParameters->setEnabled(true);
         ui->buttonRun->setEnabled(true);
+        ui->buttonDeleteParam->setEnabled(true);
     }
     else{
         ui->buttonParameters->setEnabled(false);
         ui->buttonRun->setEnabled(false);
+        ui->buttonDeleteParam->setEnabled(false);
     }
 }
 
@@ -330,5 +315,26 @@ void MainWindow::on_pushButton_2_clicked()
         }
         out<<"\n";
     }
+
+}
+
+void MainWindow::on_buttonDeleteParam_clicked()
+{
+ QString deletableAlgo = ui->widgetListAlgorithms->selectedItems().at(0)->text();
+
+ QListWidgetItem* item = ui->widgetListAlgorithms->selectedItems().at(0);
+
+ int rowOfItem = ui->widgetListAlgorithms->row(item);
+
+ delete item; //remove it from the list widget
+
+ slistAlgoDllPaths.removeAt(rowOfItem);
+
+ QSettings settings(CFGPATH,QSettings::IniFormat);
+ settings.remove(deletableAlgo);
+
+ QFile file(deletableAlgo+"_dialogsettings.ini");
+
+ file.remove();
 
 }

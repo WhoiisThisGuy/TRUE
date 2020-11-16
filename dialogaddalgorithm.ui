@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="addButton">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>20</x>
      <y>100</y>
      <width>75</width>
      <height>23</height>
@@ -29,14 +29,14 @@
   <widget class="QPushButton" name="cancelButton">
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>110</x>
      <y>100</y>
      <width>75</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>Kenszöl</string>
+    <string>Mégsem</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="TextFileName">
@@ -55,7 +55,7 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>80</x>
      <y>0</y>
      <width>81</width>
      <height>20</height>
@@ -83,7 +83,7 @@
     <rect>
      <x>10</x>
      <y>80</y>
-     <width>571</width>
+     <width>651</width>
      <height>20</height>
     </rect>
    </property>
@@ -104,14 +104,14 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>50</x>
+     <x>80</x>
      <y>60</y>
-     <width>111</width>
+     <width>81</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Algoritmus elnevezése:</string>
+    <string>Algoritmus neve:</string>
    </property>
   </widget>
  </widget>

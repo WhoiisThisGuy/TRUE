@@ -50,7 +50,6 @@ private:
 
 private slots:
 
-
     void on_myGridView_clicked(const QModelIndex &index);
 
     void on_resizeButton_clicked();
@@ -73,6 +72,8 @@ private slots:
 
     void addAlgorithm();
 
+    void on_buttonDeleteParam_clicked();
+
 private:
 
     /*Init list start */
@@ -90,7 +91,6 @@ private:
     Gridcontroller* gridcontroller = nullptr; //the grid controller
     Mediator mediator;
 
-    QStringList slistAlgoNames;
     QStringList slistAlgoDllPaths;
 
     /* For moving start and end points with cursor */

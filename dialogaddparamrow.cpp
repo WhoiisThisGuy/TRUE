@@ -7,9 +7,7 @@ DialogAddParamRow::DialogAddParamRow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogAddParamRow)
 {
-
     ui->setupUi(this);
-
 }
 
 DialogAddParamRow::~DialogAddParamRow()
@@ -40,7 +38,6 @@ void DialogAddParamRow::insertNewParameter()
 
     if(selectedType == "Egész"){
         paramTable->setCellWidget(rowindexToInsert,1,new QSpinBox());
-
     }
     else if(selectedType == "Valós"){
         paramTable->setCellWidget(rowindexToInsert,1,new QDoubleSpinBox());

@@ -23,7 +23,6 @@ DialogParameters::DialogParameters(QWidget *parent) :
 
 DialogParameters::~DialogParameters()
 {
-
     delete ui;
 }
 
@@ -36,18 +35,18 @@ void DialogParameters::loadParamDialogSettings(QString name)
 
     QSettings settings(nameOfAlgorithm+"_dialogsettings.ini",QSettings::IniFormat);
 
-    int size= settings.beginReadArray("parameters");
-    for(int i = 0;i<size;++i){ //Save the label name and the widget class first.
+    QStringList keyList = settings.childKeys();
+
+    for(int i = 0;i<keyList.size();++i){
         ui->tableParameters->insertRow(i);
-        settings.setArrayIndex(i);
-        ui->tableParameters->setCellWidget(i,0,new QLabel(settings.value("label").toString()));
 
-        sclassname = settings.value("datatype").toString(); //type;
+        ui->tableParameters->setCellWidget(i,0,new QLabel(keyList.at(i)));
+        sclassname = settings.value(keyList.at(i)).toString();
 
-        if(sclassname == "Lista"){//if its a list, save out the list values
+        if(settings.value(keyList.at(i)).type() == QMetaType::QStringList){
 
             QComboBox* cb = new QComboBox();
-            cb->addItems(settings.value("listvalues").toStringList());
+            cb->addItems(settings.value(keyList.at(i)).toStringList());
             ui->tableParameters->setCellWidget(i,1,cb);
         }
         else if(sclassname == "Egész"){
@@ -61,10 +60,10 @@ void DialogParameters::loadParamDialogSettings(QString name)
         }
 
         twi= new QTableWidgetItem();
-        twi->setText(settings.value("datatype").toString());
+        twi->setText(sclassname);
         ui->tableParameters->setItem(i,2,twi);
     }
-    settings.endArray();
+
     //qDebug("Param dialog settings loaded!");
 }
 
@@ -142,19 +141,12 @@ void DialogParameters::on_tableParameters_itemSelectionChanged()
 
 void DialogParameters::on_buttonDelete_clicked()
 {
-    QModelIndexList selected = ui->tableParameters->selectionModel()->selectedRows();
-    QSettings settings(nameOfAlgorithm+"_dialogsettings.ini",QSettings::IniFormat);
+    QModelIndex selected = ui->tableParameters->selectionModel()->selectedRows().at(0);
 
-    settings.beginReadArray("parameters");
-    for(int i = 0;i<selected.count();++i){ //This does not remove correctly, there will be garbage in the ini file.
-        settings.setArrayIndex(selected.at(i).row());
-        settings.remove("label");
-        settings.remove("class");
-        settings.remove("listvalues");
-        settings.remove("datatype");
-        ui->tableParameters->removeRow(selected.at(i).row());
-    }
-    settings.endArray();
+    QSettings settings(nameOfAlgorithm+"_dialogsettings.ini",QSettings::IniFormat);
+    QString whattoremove = selected.data().toString();
+    ui->tableParameters->removeRow(selected.row());
+    settings.remove(whattoremove);
 }
 
 void DialogParameters::on_buttonSaveParams_clicked()
@@ -166,25 +158,15 @@ void DialogParameters::on_buttonSaveParams_clicked()
 void DialogParameters::saveParamDialogSettings()
 {
     QSettings settings(nameOfAlgorithm+"_dialogsettings.ini",QSettings::IniFormat);
-    //save settings only if table has any items
-    if(ui->tableParameters->rowCount()==0){
-        settings.beginWriteArray("parameters",0);
-        settings.endArray();
-        return;
-    }
     QTableWidgetItem* wit;
     QString sclassname;
     QLabel* label;
-    settings.beginWriteArray("parameters");
-    for(int i = 0;i<ui->tableParameters->rowCount();++i){ //Save the label name and the widget type first.
-        settings.setArrayIndex(i);
-        label = (QLabel*)ui->tableParameters->cellWidget(i,0);
-        settings.setValue("label", label->text()); //save name
 
+    for(int i = 0;i<ui->tableParameters->rowCount();++i){ //Save the label name and the widget type first.
+
+        label = dynamic_cast<QLabel*>(ui->tableParameters->cellWidget(i,0));
         wit = ui->tableParameters->item(i,2);
         sclassname = wit->text();
-
-        settings.setValue("datatype", sclassname); //save class
 
         if(sclassname == "Lista"){//if its a list, save out the list values
 
@@ -193,10 +175,13 @@ void DialogParameters::saveParamDialogSettings()
             for(int j = 0;j<cb->count();++j){
                 valuelist.push_back(cb->itemText(j));
             }
-            settings.setValue("listvalues",valuelist);
+            settings.setValue(label->text(), valuelist);
+        }
+        else{
+            settings.setValue(label->text(), sclassname);
         }
     }
-    settings.endArray();
+
     qDebug("Param dialog settings saved!");
 
 }

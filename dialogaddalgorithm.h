@@ -2,9 +2,10 @@
 #define DIALOGADDALGORITHM_H
 
 #include <QDialog>
+#include "QListWidget"
 
 #ifndef CFGPATH
-#define CFGPATH "config.cfg"
+#define CFGPATH "SavedAlgorithms.ini"
 #endif
 
 namespace Ui {
@@ -16,11 +17,12 @@ class DialogAddAlgorithm : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogAddAlgorithm(QWidget *parent = nullptr);
+    explicit DialogAddAlgorithm(QWidget *parent = nullptr, QListWidget* algoList_ = nullptr, QStringList* dllPathList_ = nullptr);
     ~DialogAddAlgorithm();
 
 private:
-    bool writeDataConfigFile(const QString& algoname, const QString& filename); //Use QSettings instead!
+
+    void saveNewAlgorithm(const QString& algoname, const QString& filename);
 
 private slots:
 
@@ -30,8 +32,12 @@ private slots:
 
     void on_TextNameOfAlgo_textChanged(const QString &arg1);
 
+    void on_cancelButton_clicked();
+
 private:
     Ui::DialogAddAlgorithm *ui;
+    QListWidget* algoList;
+    QStringList* dllPathList;
 };
 
 #endif // DIALOGADDALGORITHM_H
