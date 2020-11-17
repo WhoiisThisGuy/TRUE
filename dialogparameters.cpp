@@ -7,8 +7,6 @@
 #include "QLineEdit"
 #include "QFile"
 
-vector<string> DialogParameters::algorithmRunParameters;
-
 DialogParameters::DialogParameters(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogParameters)
@@ -67,64 +65,45 @@ void DialogParameters::loadParamDialogSettings(QString name)
     //qDebug("Param dialog settings loaded!");
 }
 
-vector<string> DialogParameters::getParameters()
+vector<variant<int,double,string>> DialogParameters::CompileParameters()
 {
-    return algorithmRunParameters;
-}
 
-void DialogParameters::setParameters()
-{
-    algorithmRunParameters.clear();
-    //Parameter* param;
-    QLabel* label;
+    QTableWidgetItem* wti;
     QSpinBox* spinbox;
     QDoubleSpinBox* dspinbox;
     QLineEdit* lineedit;
     QComboBox* cb;
     string sclassname;
-    string value;
 
-    QTableWidgetItem* wti;
+    Parameters.clear();
 
     int rowcount = ui->tableParameters->rowCount();
 
-    if(rowcount == 0) //find out something for 0 params.
-    {
-        return;
-    }
-
     for(int i = 0;i<rowcount;++i){
-
-
-        label = dynamic_cast<QLabel*>(ui->tableParameters->cellWidget(i,0));
-
         wti = ui->tableParameters->item(i,2);
         sclassname = wti->text().toStdString();
 
         if(sclassname == "Lista"){//if its a list, save out the list values
-
             cb = (QComboBox*)ui->tableParameters->cellWidget(i,1);
-            value = cb->currentText().toStdString();
+            Parameters.push_back(cb->currentText().toStdString());
         }
         else if(sclassname == "Egész"){
              spinbox = (QSpinBox*)ui->tableParameters->cellWidget(i,1);
-             value = std::to_string(spinbox->value());
+             Parameters.push_back(spinbox->value());
         }
         else if(sclassname == "Valós"){
              dspinbox = (QDoubleSpinBox*)ui->tableParameters->cellWidget(i,1);
-             value = std::to_string(dspinbox->value());
+             Parameters.push_back(dspinbox->value());
         }
         else if(sclassname == "Szöveg"){
             lineedit = (QLineEdit*)ui->tableParameters->cellWidget(i,1);
-            value = lineedit->text().toStdString();
+            Parameters.push_back(lineedit->text().toStdString());
         }
-        algorithmRunParameters.push_back(value);
-        //qDebug("Param added value = %s",value.data());
-
     }
 
-    return;
+    return Parameters;
 }
+
 
 void DialogParameters::on_buttonAdd_clicked()
 {
@@ -188,7 +167,7 @@ void DialogParameters::saveParamDialogSettings()
 
 void DialogParameters::on_DialogParameters_finished(int result)
 {
-
+    CompileParameters();
     for(int i = ui->tableParameters->rowCount();i>=0;--i){
         ui->tableParameters->removeRow(i);
     }

@@ -87,6 +87,7 @@ private:
     int cellsize = CELLSIZE;
 
     fpointer fp = nullptr; //dll function pointer
+    string algoNameInFp = "";
     IPathfinder* algorithmObject = nullptr; //The dll algorithm object
     Gridcontroller* gridcontroller = nullptr; //the grid controller
     Mediator mediator;

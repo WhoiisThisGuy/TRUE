@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent)
     CreateMenus();
 
     ReadAlgorithms(); //load in the list of algorithms
-
 }
 
 
@@ -162,7 +161,8 @@ void MainWindow::ReadAlgorithms()
 
    for (int i = 0; i < size; ++i) {
 
-       slistAlgoDllPaths.push_back(settings.value(algoNameList.at(i)).toString()); //Store all dll path
+    slistAlgoDllPaths.push_back(settings.value(algoNameList.at(i)).toString()); //Store all dll path
+    qDebug()<<slistAlgoDllPaths.at(i);
    }
 
     ui->widgetListAlgorithms->addItems(algoNameList); //Set the algo name list
@@ -242,15 +242,8 @@ void MainWindow::on_widgetListAlgorithms_itemSelectionChanged()
 
 void MainWindow::on_buttonRun_clicked()
 {
-//    dialogparam.setParameters();
-//    algorithmRunParameters = DialogParameters::getParameters();
-//    for(auto x: algorithmRunParameters){
-//        qDebug("param: %s",x.data());
-//    }
-//    qDebug("Got the parameters!");
 
-    if(!fp) //implement check for different algorithm fp
-        LoaddllFile();
+    LoaddllFile();
     StartSearch();
 
 }
@@ -266,9 +259,10 @@ void MainWindow::StartSearch()
     if(algorithmObject){
         algorithmObject->Attach(gridcontroller);//not using in the main thread anymore from this point
 
-        //From this part a new thread is started
-        qDebug("Mainwindow threadid: %d",QThread::currentThreadId());
-        if(threadController.Init(algorithmObject)){
+        //From this part a new thread is started in threadcontroller object
+        //qDebug("Mainwindow threadid: %d",QThread::currentThreadId());
+
+        if(threadController.Init(algorithmObject,dialogparam.Parameters)){
             threadController.operate(true);//this is on a new thread now
         }
     }
@@ -279,22 +273,30 @@ void MainWindow::StartSearch()
 
 void MainWindow::LoaddllFile()
 {
+    QListWidgetItem* item = ui->widgetListAlgorithms->selectedItems().at(0);
 
-    QLibrary myLib("dllteszt"); //AntColonyOptimization,qtdllteszt,Astar
+    int rowOfItem = ui->widgetListAlgorithms->row(item);
+
+    if(algoNameInFp == item->text().toStdString())
+        return;
+    else{
+        algoNameInFp = "";
+        delete algorithmObject;
+    }
+
+    QLibrary myLib(slistAlgoDllPaths.at(rowOfItem)); //AntColonyOptimization,qtdllteszt,Astar
 
     fp = (fpointer) myLib.resolve("InitPathfinderObject");
 
     if (fp){
-
+      algoNameInFp = item->text().toStdString(); //save currently loaded algorithm object name
       qDebug("resolve successful");
       algorithmObject = fp();
       if(!algorithmObject)
            qDebug("algorithmObject NOT ok.");
-
     }
     else
        qDebug("%s",myLib.errorString().toUtf8().constData());
-
 
 }
 

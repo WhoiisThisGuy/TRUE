@@ -13,7 +13,7 @@ class WorkerThreadController : public QObject
 public:
     explicit WorkerThreadController(QObject *parent = nullptr);
 
-    bool Init(IPathfinder* p_);
+    bool Init(IPathfinder* p_, const vector<variant<int,double,string>>& Parameters);
 
 virtual ~WorkerThreadController() {
         workerThread.quit();

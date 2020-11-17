@@ -8,9 +8,11 @@
 #include "QSettings"
 #include <vector>
 #include <string>
+#include <variant>
 
 using std::vector;
 using std::string;
+using std::variant;
 
 struct Parameter{
 
@@ -36,10 +38,9 @@ public:
     explicit DialogParameters(QWidget *parent = nullptr);
     ~DialogParameters();
     void loadParamDialogSettings(QString name);
-    void setParameters();
-    static vector<string> getParameters(); //not needed if the variable is public anyway
+    vector<variant<int,double,string>> CompileParameters();
 public:
-    static vector<string> algorithmRunParameters;
+    vector<variant<int,double,string>> Parameters;
 private slots:
     void on_buttonAdd_clicked();
 

@@ -5,18 +5,16 @@ WorkerThreadController::WorkerThreadController(QObject *parent) : QObject(parent
 
 }
 
-bool WorkerThreadController::Init(IPathfinder *p_)
+bool WorkerThreadController::Init(IPathfinder *p_,const vector<variant<int,double,string>>& Parameters)
 {
     p = p_;
-    vector<string> asd;//debug only delete this
-    asd.push_back("asd");
     Worker* worker;
     worker = new Worker(p);
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(this, &WorkerThreadController::operate, worker, &Worker::doSearch);
     connect(worker, &Worker::resultReady, this, &WorkerThreadController::handleResults);
-    p->Init(asd);
+    p->Init(Parameters);
     workerThread.start();
     return true;
 }
