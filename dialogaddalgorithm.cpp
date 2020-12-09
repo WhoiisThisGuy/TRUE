@@ -13,10 +13,18 @@ DialogAddAlgorithm::DialogAddAlgorithm(QWidget *parent,QListWidget* algoList_,QS
     ui->addButton->setEnabled(false);
     algoList = algoList_;
     dllPathList = dllPathList_;
+
+    bar = new QStatusBar(this);
+    bar->setSizeGripEnabled(false);
+    ui->gridLayout->addWidget(bar);
+    ui->gridLayout->setContentsMargins(0,0,0,0);
+    bar->showMessage(tr("Új algoritmus felvétele."));
+
 }
 
 DialogAddAlgorithm::~DialogAddAlgorithm()
 {
+    delete bar;
     delete ui;
 }
 
@@ -26,7 +34,7 @@ void DialogAddAlgorithm::saveNewAlgorithm(const QString &algoName, const QString
 
    //save settings only if table has any items
    if(settings.contains(algoName)){
-    qDebug("Algo name is already in use!");
+    bar->showMessage(tr("A név már használatban van."));
     return;
    }
 
@@ -35,7 +43,8 @@ void DialogAddAlgorithm::saveNewAlgorithm(const QString &algoName, const QString
    algoList->addItem(algoName);
    dllPathList->push_back(filePath);
 
-   qDebug("New algorithm added to config!");
+   bar->showMessage(tr("Új algoritmus felvéve."));
+
 }
 
 
@@ -58,6 +67,7 @@ void DialogAddAlgorithm::on_addFileButton_clicked()
 void DialogAddAlgorithm::on_addButton_clicked()
 {
     saveNewAlgorithm(ui->TextNameOfAlgo->text(),ui->TextFileName->text());
+
 }
 
 void DialogAddAlgorithm::on_TextNameOfAlgo_textChanged(const QString &arg1)

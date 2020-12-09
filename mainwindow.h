@@ -2,17 +2,18 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "QVariant"
+
+#include "logger.h"
 #include "QMouseEvent"
 #include "QFileDialog"
-
 #include "gridmodel.h"
 #include "dialogparameters.h"
 #include "ipathfinder.h"
-#include "gridcontroller.h"
 #include "workerthreadcontroller.h"
+#include "dialogresults.h"
+#include "QListWidgetItem"
 
-#define CELLSIZE 13
+#define CELLSIZE 16
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -33,6 +34,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
 protected:
 #ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -49,6 +51,8 @@ private:
     void LoaddllFile(); //Loads the dll file and gets the IPathfinder object
 
 private slots:
+
+    void handleSearchFinish(int result);
 
     void on_myGridView_clicked(const QModelIndex &index);
 
@@ -68,11 +72,17 @@ private slots:
 
     void on_buttonRun_clicked();
 
-    void on_pushButton_2_clicked();
-
     void addAlgorithm();
 
-    void on_buttonDeleteParam_clicked();
+    void on_button_Results_clicked();
+
+    void on_buttonStop_clicked();
+
+    void on_widgetListAlgorithms_itemClicked(QListWidgetItem *item);
+
+    void on_buttonDeleteAlgo_clicked();
+
+    void on_pushButton_clicked();
 
 private:
 
@@ -80,6 +90,8 @@ private:
     Ui::MainWindow *ui;
     DialogParameters dialogparam;
     WorkerThreadController threadController;
+    Gridcontroller gridcontroller; //the grid controller
+    Logger log;
     /*Init list end */
 
     GridModel myGridModel; //contains the grid data
@@ -87,10 +99,10 @@ private:
     int cellsize = CELLSIZE;
 
     fpointer fp = nullptr; //dll function pointer
-    string algoNameInFp = "";
-    IPathfinder* algorithmObject = nullptr; //The dll algorithm object
-    Gridcontroller* gridcontroller = nullptr; //the grid controller
-    Mediator mediator;
+    QString algoNameToLoad = "";
+    //IPathfinder* algorithmObject = nullptr; //The dll algorithm object
+
+    Mediator mediator; //Used in gridcontroller to emit signals for the gridmodel class
 
     QStringList slistAlgoDllPaths;
 
@@ -104,6 +116,10 @@ private:
     QAction *newAlgoAct= nullptr;
     QAction *exitAct= nullptr;
     vector<string> algorithmRunParameters;
+
+    dialogResults dialog_results;
+
+
 
 };
 #endif // MAINWINDOW_H

@@ -3,34 +3,41 @@
 #include "QThread"
 #include "ipathfinder.h"
 #include "QElapsedTimer"
+#include "gridcontroller.h"
+#include <memory.h>
+#include <vector>
+#include <QMetaType>
+
+using namespace std;
+
+/* Definitions for dll files. */
+
+typedef IPathfinder* (*fpointer)();
+
+/* Definitions for dll files end. */
 
 class Worker : public QObject
 {
+
     Q_OBJECT
 public slots:
-    void doSearch() {
-        timer.start();
-        int result = pathfinderobject->StartSearch();
-        //qDebug("Workerthread threadid: %d",QThread::currentThreadId());
-        /* ... here is the expensive or blocking operation ... */
-        //qDebug("Worker: result ready emitting result signal!");
-
-        qDebug("Timer stopped!");
-        qDebug("---------------------");
-        qDebug()<<"Timer: Elapsed time: "<<timer.elapsed()<<" milliseconds"<<endl;
-        qDebug("---------------------");
-        emit resultReady(result);
-
-    }
+    void doSearch();
+public:
+    int LoadPathfinderObject(const QString& algoNameToLoad,Gridcontroller* gridcontroller);
+    Worker(const vector<string>& Parameters_,bool* abortFlag_);
+    virtual ~ Worker();
 public:
 
-    Worker(IPathfinder* p);
-    virtual ~ Worker() { qDebug("Worker deleted.");}
-public:
-    IPathfinder* pathfinderobject;
+    bool* abortFlag;
     QElapsedTimer timer;
+    vector<string> Parameters;
+    IPathfinder* pathfinderobject = nullptr;
+
+
+private:
+    //bool abortFlag;
 signals:
-    void resultReady(bool solutionfound);
+    void resultReady(vector<int> ThePath,double time,int result);
 
 };
 

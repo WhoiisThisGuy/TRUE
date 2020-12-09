@@ -4,12 +4,12 @@
 struct Point{
 
 public:
-    Point(): x(0),y(0){}
-    Point(int x_,int y_):x(x_),y(y_){}
-    int x;
-    int y;
+    Point(): row(0),col(0){}
+    Point(int x,int y):row(x),col(y){}
+    int row;
+    int col;
     bool operator==(const Point& rhs){
-        if(this->x == rhs.x && this->y == rhs.y)
+        if(this->row == rhs.row && this->col == rhs.col)
             return true;
         return false;
     }

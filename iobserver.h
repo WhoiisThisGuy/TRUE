@@ -1,15 +1,12 @@
 #ifndef IObserver_H
 #define IObserver_H
 #include "mypoint.h"
-#include <string>
-
-using std::string;
 
 class IObserver
 {
 public:
     IObserver() {}
-    virtual ~IObserver() {if(grid) delete[] grid;}
+    virtual ~IObserver() {}
     virtual void setGridValue(int row, int col, int val) = 0;
     virtual void clearPathColors() = 0;
 public:
@@ -18,6 +15,7 @@ public:
     Point dst;
     int numberOfRows = 0;
     int numberOfColumns = 0;
+    unsigned int numberOfVisitedNodes = 0;
 };
 
 #endif // IOBSERVER_H

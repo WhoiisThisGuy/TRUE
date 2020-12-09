@@ -3,21 +3,27 @@
 
 #include <QDialog>
 #include "QListWidget"
+#include "QStatusBar"
 
 #ifndef CFGPATH
 #define CFGPATH "SavedAlgorithms.ini"
 #endif
 
 namespace Ui {
+
 class DialogAddAlgorithm;
+
 }
 
 class DialogAddAlgorithm : public QDialog
 {
+
     Q_OBJECT
 
 public:
+
     explicit DialogAddAlgorithm(QWidget *parent = nullptr, QListWidget* algoList_ = nullptr, QStringList* dllPathList_ = nullptr);
+
     ~DialogAddAlgorithm();
 
 private:
@@ -38,6 +44,7 @@ private:
     Ui::DialogAddAlgorithm *ui;
     QListWidget* algoList;
     QStringList* dllPathList;
+    QStatusBar* bar;
 };
 
 #endif // DIALOGADDALGORITHM_H

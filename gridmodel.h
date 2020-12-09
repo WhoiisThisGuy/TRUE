@@ -4,6 +4,9 @@
 #include "QColor"
 #include "QBrush"
 #include "mypoint.h"
+#include <vector>
+
+using namespace std;
 
 //[event_receiver(native)]
 class GridModel : public QAbstractTableModel
@@ -21,6 +24,8 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+
+
     /* Reimplemented */
     virtual bool insertRows(int position, int count, const QModelIndex &parent = QModelIndex()) override;
     virtual bool removeRows(int position, int count, const QModelIndex &parent = QModelIndex())override;
@@ -35,6 +40,7 @@ public:
 
 
     void setGridValue(int row, int col, int value);
+    void DrawPath(const std::vector<int> & ThePath);
 
     int getGridValueByIndex(const QModelIndex &index);
     int getGridValueByRowCol(int row, int col);
@@ -42,8 +48,8 @@ public:
     void clearGrid();
     void clearGridPaths();
 
-    int numberOfRows; // hányszor
-    int numberOfColumns;//hányas
+    int numberOfRows;
+    int numberOfColumns;
 
     Point pStart;
     Point pTarget;

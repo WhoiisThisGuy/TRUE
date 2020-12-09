@@ -5,7 +5,9 @@
 #include "QTableWidget"
 
 namespace Ui {
+
 class DialogAddParamRow;
+
 }
 
 class DialogAddParamRow : public QDialog
@@ -13,11 +15,15 @@ class DialogAddParamRow : public QDialog
     Q_OBJECT
 
 public:
+
     explicit DialogAddParamRow(QWidget *parent = nullptr);
+
     ~DialogAddParamRow();
+
     void setUpParamDialog(QTableWidget*);
 
 private slots:
+
     void on_buttonSave_clicked();
 
     void on_buttonAddNewValue_clicked();
@@ -31,9 +37,13 @@ private slots:
     void on_DialogAddParamRow_finished(int result);
 
 private:
+
     void insertNewParameter();
+
 private:
+
     Ui::DialogAddParamRow *ui;
+
     QTableWidget* paramTable; //holds dialogparam table
 };
 

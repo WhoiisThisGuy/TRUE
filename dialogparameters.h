@@ -8,23 +8,11 @@
 #include "QSettings"
 #include <vector>
 #include <string>
-#include <variant>
+#include "QStatusBar"
 
 using std::vector;
 using std::string;
 using std::variant;
-
-struct Parameter{
-
-public:
-    string name;
-    string value;
-public:
-    Parameter(){ }
-    ~Parameter(){qDebug("Parameter destructed.");}
-
-
-};
 
 namespace Ui {
 class DialogParameters;
@@ -35,12 +23,15 @@ class DialogParameters : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogParameters(QWidget *parent = nullptr);
+    explicit DialogParameters(QWidget *parent_ = nullptr);
     ~DialogParameters();
     void loadParamDialogSettings(QString name);
-    vector<variant<int,double,string>> CompileParameters();
+    vector<string> CompileParameters();
+    vector<string> getParametersFromFile(QString name);
+
+
 public:
-    vector<variant<int,double,string>> Parameters;
+    vector<string> Parameters;
 private slots:
     void on_buttonAdd_clicked();
 
@@ -52,12 +43,14 @@ private slots:
 
     void on_DialogParameters_finished(int result);
 
+
+
 private:
     void saveParamDialogSettings();
 
 private:
 
-
+    QStatusBar* bar;
     QString nameOfAlgorithm;
 
     Ui::DialogParameters *ui;

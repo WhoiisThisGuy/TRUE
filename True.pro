@@ -19,8 +19,10 @@ SOURCES += \
     dialogaddalgorithm.cpp \
     dialogaddparamrow.cpp \
     dialogparameters.cpp \
+    dialogresults.cpp \
     gridcontroller.cpp \
     gridmodel.cpp \
+    logger.cpp \
     main.cpp \
     mainwindow.cpp \
     mediator.cpp \
@@ -33,10 +35,12 @@ HEADERS += \
     dialogaddalgorithm.h \
     dialogaddparamrow.h \
     dialogparameters.h \
+    dialogresults.h \
     gridcontroller.h \
     gridmodel.h \
     iobserver.h \
     ipathfinder.h \
+    logger.h \
     mainwindow.h \
     mediator.h \
     mypoint.h \
@@ -47,6 +51,7 @@ FORMS += \
     dialogaddalgorithm.ui \
     dialogaddparamrow.ui \
     dialogparameters.ui \
+    dialogresults.ui \
     mainwindow.ui
 
 # Default rules for deployment.

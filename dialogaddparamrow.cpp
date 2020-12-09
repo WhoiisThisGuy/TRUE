@@ -8,6 +8,7 @@ DialogAddParamRow::DialogAddParamRow(QWidget *parent) :
     ui(new Ui::DialogAddParamRow)
 {
     ui->setupUi(this);
+    setWindowTitle("Paraméter hozzáadása");
 }
 
 DialogAddParamRow::~DialogAddParamRow()
@@ -24,7 +25,7 @@ void DialogAddParamRow::setUpParamDialog(QTableWidget * table)
 void DialogAddParamRow::on_buttonSave_clicked()
 {
     insertNewParameter();
-    close();
+    done(Accepted);
 }
 
 void DialogAddParamRow::insertNewParameter()
@@ -100,6 +101,7 @@ void DialogAddParamRow::on_lineParamName_textChanged(const QString &arg1)
 
 void DialogAddParamRow::on_buttonCancel_clicked()
 {
+
     close();
 }
 

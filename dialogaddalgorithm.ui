@@ -6,114 +6,85 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>672</width>
-    <height>130</height>
+    <width>600</width>
+    <height>150</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>600</width>
+    <height>150</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="addButton">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>100</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Hozzáad</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="cancelButton">
-   <property name="geometry">
-    <rect>
-     <x>110</x>
-     <y>100</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Mégsem</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="TextFileName">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>0</y>
-     <width>381</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>0</y>
-     <width>81</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Kiválasztot fájl:</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="addFileButton">
-   <property name="geometry">
-    <rect>
-     <x>560</x>
-     <y>0</y>
-     <width>91</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Fájl hozzáadása</string>
-   </property>
-  </widget>
-  <widget class="Line" name="line">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>80</y>
-     <width>651</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="TextNameOfAlgo">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>60</y>
-     <width>191</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>60</y>
-     <width>81</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Algoritmus neve:</string>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Kiválasztot fájl:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="TextFileName">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="addFileButton">
+     <property name="maximumSize">
+      <size>
+       <width>100</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Fájl hozzáadása</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Algoritmus neve:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="TextNameOfAlgo"/>
+   </item>
+   <item row="2" column="0" colspan="4">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QPushButton" name="addButton">
+     <property name="text">
+      <string>Hozzáad</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QPushButton" name="cancelButton">
+     <property name="maximumSize">
+      <size>
+       <width>80</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Mégsem</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

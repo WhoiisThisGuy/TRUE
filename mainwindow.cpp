@@ -4,6 +4,7 @@
 #include "QTextStream"
 #include "QComboBox"
 #include "QLibrary"
+#include "qdebug.h"
 
 #include "dialogaddalgorithm.h"
 #include "dialogparameters.h"
@@ -12,7 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     ,dialogparam(this)
-    ,threadController(this)
+    ,threadController(this,&dialog_results)
+    ,gridcontroller(&mediator)
+    ,log(this,"log.txt")
 {
 
     ui->setupUi(this);
@@ -21,11 +24,13 @@ MainWindow::MainWindow(QWidget *parent)
     InitModelView(); //Table gemoetry setup
 
     connect(&dialogparam,&DialogParameters::finished,this,&MainWindow::on_paramWindowDestroyed);
+    connect(&threadController,&WorkerThreadController::SearchFinished,this,&MainWindow::handleSearchFinish);
 
     CreateActions();
     CreateMenus();
 
     ReadAlgorithms(); //load in the list of algorithms
+    threadController.log = &log;
 }
 
 
@@ -34,17 +39,13 @@ MainWindow::~MainWindow()
     delete ui;
 
     //clean up
-    if(algorithmObject)
-        delete algorithmObject;
-    if(gridcontroller)
-        delete gridcontroller;
-    if(newAlgoAct)
+    if(newAlgoAct) //Do I have to delete this ?
         delete newAlgoAct;
     if(exitAct)
         delete exitAct;
-
-
+    log.closeFile();
 }
+
 #ifndef QT_NO_CONTEXTMENU
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
@@ -69,7 +70,6 @@ void MainWindow::on_myGridView_clicked(const QModelIndex &index)
         }
         return;
     }
-
     if(cellData == 0){ //clicked on white cell
 
         myGridModel.setGridValue(index.row(),index.column(),1); //set gray cell
@@ -82,8 +82,8 @@ void MainWindow::on_myGridView_clicked(const QModelIndex &index)
     else if( cellData == 2 || cellData == 3 ){
 
         isStartOrTargetSelected = true;
-        startOrTargetSelectedIndex.x = index.row();
-        startOrTargetSelectedIndex.y = index.column();
+        startOrTargetSelectedIndex.row = index.row();
+        startOrTargetSelectedIndex.col = index.column();
         startOrTargetSelectedColor = cellData;
 
         return;
@@ -97,11 +97,11 @@ void MainWindow::on_myGridView_entered(const QModelIndex &index)
     int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2;
       if(myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()] != oppositeColor
       && myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()] != 1
-      && (index.column() != startOrTargetSelectedIndex.y || startOrTargetSelectedIndex.x != index.row())) //if cursor moved in a different cell
+      && (index.column() != startOrTargetSelectedIndex.col || startOrTargetSelectedIndex.row != index.row())) //if cursor moved in a different cell
       {
-          myGridModel.setGridValue(startOrTargetSelectedIndex.x,startOrTargetSelectedIndex.y,0);
-          startOrTargetSelectedIndex.x = index.row();
-          startOrTargetSelectedIndex.y = index.column();
+          myGridModel.setGridValue(startOrTargetSelectedIndex.row,startOrTargetSelectedIndex.col,0);
+          startOrTargetSelectedIndex.row = index.row();
+          startOrTargetSelectedIndex.col = index.column();
       }
       myGridModel.setGridValue(index.row(),index.column(),startOrTargetSelectedColor);
    }
@@ -109,7 +109,9 @@ void MainWindow::on_myGridView_entered(const QModelIndex &index)
 
 void MainWindow::on_resizeButton_clicked()
 {
+
     myGridModel.ResizeGrid(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
+    statusBar()->showMessage("Pálya átméretezve.");
 }
 
 void MainWindow::InitModelView()
@@ -155,6 +157,10 @@ void MainWindow::ReadAlgorithms()
 {
    QSettings settings(CFGPATH,QSettings::IniFormat);
 
+   if (!QFile(CFGPATH).exists()){
+       log.write("SavedAlgorithms.ini file is missing.");
+   }
+
    QStringList algoNameList = settings.childKeys();
 
    int size = algoNameList.size();
@@ -173,6 +179,7 @@ void MainWindow::on_clearButton_clicked()
 {
 
     myGridModel.clearGrid();
+    statusBar()->showMessage("Pálya letisztítva.");
 
 }
 
@@ -188,9 +195,12 @@ void MainWindow::addAlgorithm()
 {
     ui->buttonParameters->setEnabled(false);
     ui->buttonRun->setEnabled(false);
-    ui->buttonDeleteParam->setEnabled(false);
+    ui->buttonDeleteAlgo->setEnabled(false);
     DialogAddAlgorithm dialog(this,ui->widgetListAlgorithms,&slistAlgoDllPaths);
+
     dialog.exec();
+
+    setStatusTip(tr("Ablak bezárva."));
 }
 
 void MainWindow::exit()
@@ -212,7 +222,7 @@ void MainWindow::CreateActions()
     newAlgoAct->setStatusTip(tr("Új algoritmus felvétele a listába."));
     connect(newAlgoAct, &QAction::triggered, this, &MainWindow::addAlgorithm);
 
-    exitAct = new QAction(tr("&Kilépés"), this);
+    exitAct = new QAction(tr("&Bezárás"), this);
     exitAct->setStatusTip(tr("Program bezárása."));
     connect(exitAct, &QAction::triggered, this, &MainWindow::exit);
 }
@@ -222,7 +232,7 @@ void MainWindow::on_buttonParameters_clicked()
     dialogparam.loadParamDialogSettings(ui->widgetListAlgorithms->selectedItems().at(0)->text());
     dialogparam.show();
     ui->buttonParameters->setEnabled(false);
-    ui->buttonRun->setEnabled(true);
+    statusBar()->showMessage("Paraméter beállítások mutatása.");
 }
 
 void MainWindow::on_widgetListAlgorithms_itemSelectionChanged()
@@ -231,100 +241,104 @@ void MainWindow::on_widgetListAlgorithms_itemSelectionChanged()
     if(!dialogparam.isVisible() && !selected.empty()){
         ui->buttonParameters->setEnabled(true);
         ui->buttonRun->setEnabled(true);
-        ui->buttonDeleteParam->setEnabled(true);
+        ui->buttonDeleteAlgo->setEnabled(true);
     }
     else{
         ui->buttonParameters->setEnabled(false);
         ui->buttonRun->setEnabled(false);
-        ui->buttonDeleteParam->setEnabled(false);
+        ui->buttonDeleteAlgo->setEnabled(false);
     }
 }
 
 void MainWindow::on_buttonRun_clicked()
 {
 
-    LoaddllFile();
+    //LoaddllFile();
+    statusBar()->showMessage("Keresés indítása...");
+    log.write("Starting new search process...");
     StartSearch();
 
 }
 void MainWindow::StartSearch()
 {
-
-    if(!gridcontroller){
-        gridcontroller = new Gridcontroller(&mediator); //this will be used only in the new thread
-
-    }
-    gridcontroller->InitGridModel(&myGridModel);//not using in the main thread anymore from this point
-
-    if(algorithmObject){
-        algorithmObject->Attach(gridcontroller);//not using in the main thread anymore from this point
-
-        //From this part a new thread is started in threadcontroller object
-        //qDebug("Mainwindow threadid: %d",QThread::currentThreadId());
-
-        if(threadController.Init(algorithmObject,dialogparam.Parameters)){
-            threadController.operate(true);//this is on a new thread now
-        }
-    }
-
-}
-
-
-
-void MainWindow::LoaddllFile()
-{
+    log.write("Reading selected algorithm name.");
     QListWidgetItem* item = ui->widgetListAlgorithms->selectedItems().at(0);
-
+    log.write("Selected algorithm name: "+item->text());
     int rowOfItem = ui->widgetListAlgorithms->row(item);
 
-    if(algoNameInFp == item->text().toStdString())
-        return;
+    algoNameToLoad = slistAlgoDllPaths.at(rowOfItem);
+    log.write("The path for the dll file: "+algoNameToLoad);
+    myGridModel.clearGridPaths();
+
+    gridcontroller.InitGrid(&myGridModel);//not using gridcontroller in the main thread anymore from this point
+    vector<string> parameters;
+    log.write("Compiling search parameters...");
+    if(dialogparam.isVisible())
+      parameters = dialogparam.CompileParameters();
     else{
-        algoNameInFp = "";
-        delete algorithmObject;
+      parameters = dialogparam.getParametersFromFile(item->text());
     }
-
-    QLibrary myLib(slistAlgoDllPaths.at(rowOfItem)); //AntColonyOptimization,qtdllteszt,Astar
-
-    fp = (fpointer) myLib.resolve("InitPathfinderObject");
-
-    if (fp){
-      algoNameInFp = item->text().toStdString(); //save currently loaded algorithm object name
-      qDebug("resolve successful");
-      algorithmObject = fp();
-      if(!algorithmObject)
-           qDebug("algorithmObject NOT ok.");
-    }
-    else
-       qDebug("%s",myLib.errorString().toUtf8().constData());
-
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    QFile file("out.txt");
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        qDebug("File open for write not ok!");
-    }
-
-    QTextStream out(&file);
-
-    out << myGridModel.numberOfRows<<"\n"<<myGridModel.numberOfColumns<<"\n";
-    for(int i = 0;i<myGridModel.numberOfRows;++i)
-    {
-        for(int j= 0;j<myGridModel.numberOfColumns;++j){
-            out<<myGridModel.getGridValueByRowCol(i,j);
+    log.write("Search parameters compiled.");
+    try{
+        statusBar()->showMessage("Inicializálás.");
+        log.write("Initializing threadController...");
+        if(threadController.Init(item->text(),algoNameToLoad,&gridcontroller,parameters)){
+            log.write("threadController Init successful, sending out StartSearchSignal...");
+           threadController.StartSearchSignal();//this is on a new thread now
+           ui->buttonStop->setEnabled(true);
+           ui->buttonRun->setEnabled(false);
+           ui->buttonRun->setEnabled(false);
+           ui->resizeButton->setEnabled(false);
+           ui->clearButton->setEnabled(true);
+           statusBar()->showMessage("A keresés folyamatban...");
+           log.write("Search started.");
         }
-        out<<"\n";
+        else{
+           statusBar()->showMessage("Keresés inicializálás nem sikerült. Ellenőrizze a log fájlt a részletekért.");
+           log.write("INITIALIZATION OF THREADCONTROLLER WAS UNSUCCESSFUL.");
+        }
+    }catch(std::error_code e){
+        statusBar()->showMessage("Hiba történt a keresés inicializálás során. Ellenőrizze a log fájlt a részletekért.");
+
+        log.write("*ERROR* error_code:" +QString::number(e.value())+QString::fromStdString(e.message()));
     }
 
 }
 
-void MainWindow::on_buttonDeleteParam_clicked()
+void MainWindow::handleSearchFinish(int result)
+{
+    ui->buttonRun->setEnabled(true);
+    ui->buttonStop->setEnabled(false);
+    ui->resizeButton->setEnabled(true);
+    ui->clearButton->setEnabled(true);
+    ui->button_Results->setEnabled(true);
+
+    if(result == 0){
+        statusBar()->showMessage(tr("Sikeres keresés."));
+        log.write("Search finished successfully.");
+    }
+    else if(result == -1){
+        statusBar()->showMessage(tr("Keresés leállítva."));
+        log.write("Search was stopped by the User.");
+    }
+    else{
+        statusBar()->showMessage("A keresés visszatérési értéke: "+QString::number(result));
+        log.write("Search has returned with the value: "+QString::number(result));
+    }
+
+}
+
+void MainWindow::on_buttonDeleteAlgo_clicked()
 {
  QString deletableAlgo = ui->widgetListAlgorithms->selectedItems().at(0)->text();
 
+ if(deletableAlgo == "")
+     return;
+
  QListWidgetItem* item = ui->widgetListAlgorithms->selectedItems().at(0);
+
+ if(!item)
+     return;
 
  int rowOfItem = ui->widgetListAlgorithms->row(item);
 
@@ -335,8 +349,43 @@ void MainWindow::on_buttonDeleteParam_clicked()
  QSettings settings(CFGPATH,QSettings::IniFormat);
  settings.remove(deletableAlgo);
 
- QFile file(deletableAlgo+"_dialogsettings.ini");
+ QFile file(deletableAlgo+"ParameterSettings.ini");
 
  file.remove();
 
+ statusBar()->showMessage(tr("Algoritmus törölve."));
+}
+
+void MainWindow::on_button_Results_clicked()
+{
+    statusBar()->showMessage("Eredmények mutatása.");
+    dialog_results.show();
+}
+
+void MainWindow::on_buttonStop_clicked()
+{
+    threadController.stop();
+}
+
+
+void MainWindow::on_widgetListAlgorithms_itemClicked(QListWidgetItem *item)
+{
+    if(item){
+        ui->buttonParameters->setEnabled(true);
+        ui->buttonRun->setEnabled(true);
+        ui->buttonDeleteAlgo->setEnabled(true);
+
+    }
+    else{
+        ui->buttonParameters->setEnabled(false);
+        ui->buttonRun->setEnabled(false);
+        ui->buttonDeleteAlgo->setEnabled(false);
+    }
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    statusBar()->showMessage("Előző keresés színek törlése.");
+    myGridModel.clearGridPaths();
 }

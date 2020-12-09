@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1381</width>
-    <height>925</height>
+    <height>657</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -24,6 +24,85 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_5">
+    <item row="0" column="1" rowspan="2">
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="maximumSize">
+       <size>
+        <width>200</width>
+        <height>280</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Algoritmus Lista</string>
+      </property>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="1" column="0">
+        <widget class="QPushButton" name="buttonParameters">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Paraméterek</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="buttonDeleteAlgo">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Törlés</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QListWidget" name="widgetListAlgorithms">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>200</height>
+          </size>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="0" column="0" rowspan="7">
      <widget class="QScrollArea" name="scrollArea">
       <property name="sizePolicy">
@@ -47,7 +126,7 @@
          <x>0</x>
          <y>0</y>
          <width>1105</width>
-         <height>864</height>
+         <height>596</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
@@ -132,16 +211,16 @@
            <bool>false</bool>
           </attribute>
           <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>15</number>
+           <number>17</number>
           </attribute>
           <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>15</number>
+           <number>17</number>
           </attribute>
           <attribute name="verticalHeaderMinimumSectionSize">
-           <number>15</number>
+           <number>17</number>
           </attribute>
           <attribute name="verticalHeaderDefaultSectionSize">
-           <number>15</number>
+           <number>17</number>
           </attribute>
          </widget>
         </item>
@@ -167,43 +246,10 @@
        <string>Négyzetrács</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="3" column="2">
-        <widget class="QLineEdit" name="mapName">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>200</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="0">
-        <widget class="QPushButton" name="pushButton_2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>200</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
+        <widget class="QPushButton" name="pushButton">
          <property name="text">
-          <string>Pálya mentése</string>
+          <string>Útvonalak törlése</string>
          </property>
         </widget>
        </item>
@@ -226,7 +272,81 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="2">
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="numberOfRowsBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="minimum">
+          <number>2</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>30</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="resizeButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Méretezés</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="numberOfColumnsBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="minimum">
+          <number>2</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>30</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
         <widget class="QPushButton" name="clearButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -266,93 +386,6 @@
          </property>
          <property name="text">
           <string>Sorok száma</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="resizeButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>200</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Méretezés</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="label_3">
-         <property name="maximumSize">
-          <size>
-           <width>200</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Név:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QSpinBox" name="numberOfRowsBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>200</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="minimum">
-          <number>2</number>
-         </property>
-         <property name="maximum">
-          <number>100</number>
-         </property>
-         <property name="value">
-          <number>30</number>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QSpinBox" name="numberOfColumnsBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>200</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="minimum">
-          <number>2</number>
-         </property>
-         <property name="maximum">
-          <number>100</number>
-         </property>
-         <property name="value">
-          <number>30</number>
          </property>
         </widget>
        </item>
@@ -405,7 +438,10 @@
         </widget>
        </item>
        <item row="3" column="2">
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="button_Results">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="maximumSize">
           <size>
            <width>200</width>
@@ -423,7 +459,10 @@
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="buttonStop">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="maximumSize">
           <size>
            <width>200</width>
@@ -437,82 +476,6 @@
          </property>
          <property name="text">
           <string>Leállítás</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="0" column="1" rowspan="2">
-     <widget class="QGroupBox" name="groupBox_3">
-      <property name="maximumSize">
-       <size>
-        <width>200</width>
-        <height>280</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Algoritmus Lista</string>
-      </property>
-      <layout class="QFormLayout" name="formLayout">
-       <item row="1" column="0">
-        <widget class="QPushButton" name="buttonParameters">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Paraméterek</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="buttonDeleteParam">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Törlés</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QListWidget" name="widgetListAlgorithms">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>400</width>
-           <height>200</height>
-          </size>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="showDropIndicator" stdset="0">
-          <bool>false</bool>
          </property>
         </widget>
        </item>

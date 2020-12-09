@@ -12,13 +12,16 @@ class Gridcontroller : public IObserver
 {
 
 public:
-    Gridcontroller(Mediator* m){mediator = m;}
+
+    Gridcontroller(Mediator* m);
     void setGridValue(int row, int col, int val) override;
     void clearPathColors() override;
-    virtual ~Gridcontroller() { if(grid) delete[] grid; }
-    void InitGridModel(GridModel* mygridmodel_);
+    virtual ~Gridcontroller() { if(grid){delete[] grid;qDebug("GridController: deleted grid");} }
+    void InitGrid(GridModel* mygridmodel_);
     GridModel* mygridmodel;
     Mediator* mediator;
+
+
 
 };
 #endif
