@@ -22,7 +22,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Algoritmus neve</string>
+      <string>Name of algorithm</string>
      </property>
     </widget>
    </item>
@@ -46,7 +46,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Futási idő</string>
+      <string>Runtime</string>
      </property>
     </widget>
    </item>
@@ -70,7 +70,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Megvizsgált pontok száma</string>
+      <string>Nodes expanded</string>
      </property>
     </widget>
    </item>
@@ -94,7 +94,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Útvonal hossz</string>
+      <string>Path total length</string>
      </property>
     </widget>
    </item>

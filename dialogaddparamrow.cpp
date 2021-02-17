@@ -8,7 +8,7 @@ DialogAddParamRow::DialogAddParamRow(QWidget *parent) :
     ui(new Ui::DialogAddParamRow)
 {
     ui->setupUi(this);
-    setWindowTitle("Paraméter hozzáadása");
+    setWindowTitle("Parameter added.");
 }
 
 DialogAddParamRow::~DialogAddParamRow()
@@ -37,13 +37,13 @@ void DialogAddParamRow::insertNewParameter()
 
     QString selectedType = ui->comboBoxParamType->currentText();
 
-    if(selectedType == "Egész"){
+    if(selectedType == "Integer"){
         paramTable->setCellWidget(rowindexToInsert,1,new QSpinBox());
     }
-    else if(selectedType == "Valós"){
+    else if(selectedType == "Double"){
         paramTable->setCellWidget(rowindexToInsert,1,new QDoubleSpinBox());
     }
-    else if(selectedType == "Lista"){
+    else if(selectedType == "List"){
         QComboBox* cbox = new QComboBox();
 
         QStringList items;
@@ -54,7 +54,7 @@ void DialogAddParamRow::insertNewParameter()
         cbox->addItems(items);
         paramTable->setCellWidget(rowindexToInsert,1,cbox);
     }
-    else if(selectedType == "Szöveg"){
+    else if(selectedType == "Text"){
         paramTable->setCellWidget(rowindexToInsert,1,new QLineEdit());
     }
     twi = new QTableWidgetItem();

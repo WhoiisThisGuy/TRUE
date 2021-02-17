@@ -1,13 +1,28 @@
 #include "Logger.h"
+#include "iostream"
+#include "QDir"
 
 Logger::Logger(QObject *parent, QString fileName) : QObject(parent) {
 
 
-if (!fileName.isEmpty() && !file.isOpen()) {
- file.setFileName(fileName);
- file.open(QIODevice::Append | QIODevice::Text);
+//    if (!fileName.isEmpty() && !file.isOpen()) {
 
-}
+//     file.setFileName("log.txt");
+
+//     if(file.open(QIODevice::WriteOnly))
+//         cout<<"aeska"<<endl;
+//     else{
+//         cout<<"dam, son"<<endl;
+//         cout<<file.errorString().toStdString()<<endl;
+//        cout<<file.error()<<endl;
+//        cout<<file.PermissionsError<<endl;
+//        cout<<file.permissions()<<endl;
+//        cout<<file.OpenError<<endl;
+//        cout<<file.fileName().toStdString()<<endl;
+
+//     }
+
+//    }
 }
 
 void Logger::write(const QString &value) {

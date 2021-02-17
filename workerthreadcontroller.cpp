@@ -35,7 +35,7 @@ bool WorkerThreadController::Init(QString AlgoName,const QString& algoNameToLoad
         log->write("*ERROR* Worker: LoadPathfinderObject(): Resolving InitPathfinderObject() function from .dll failed.");
       }
       else if(result == -2){
-          log->write("*ERROR* Worker LoadPathfinderObject(): InitPathfinderObject() failed. Pathfinderobject is NULL.");
+        log->write("*ERROR* Worker LoadPathfinderObject(): InitPathfinderObject() failed. Pathfinderobject is NULL.");
       }
       else{
         log->write("*ERROR* WorkerThreadController: Init() Error: LoadPathFinderObject() failed. Error code: "+QString::number(result));

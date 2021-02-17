@@ -22,7 +22,6 @@ void closeFile();
 
 
 private:
-
     QFile file;
 };
 

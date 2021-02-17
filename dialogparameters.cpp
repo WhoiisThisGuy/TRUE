@@ -17,7 +17,7 @@ DialogParameters::DialogParameters(QWidget *parent_) :
 
     ui->setupUi(this);
 
-    setWindowTitle("Paraméterek");
+    setWindowTitle("Parameters");
 
     bar = new QStatusBar(this);
     bar->setSizeGripEnabled(false);
@@ -62,23 +62,23 @@ void DialogParameters::loadParamDialogSettings(QString name)
         ui->tableParameters->setCellWidget(i,0,new QLabel(settings.value("label").toString()));
         type = settings.value("type").toString();
 
-        if(type == "Lista"){
+        if(type == "List"){
             QComboBox* cb = new QComboBox();
             cb->addItems(settings.value("listValues").toStringList());
             cb->setCurrentIndex(settings.value("fieldValue").toInt());
             ui->tableParameters->setCellWidget(i,1,cb);
         }
-        else if(type == "Egész"){
+        else if(type == "Integer"){
              QSpinBox* spinbox = new QSpinBox();
              spinbox->setValue(settings.value("fieldValue").toInt());
              ui->tableParameters->setCellWidget(i,1,spinbox);
         }
-        else if(type == "Valós"){
+        else if(type == "Double"){
             QDoubleSpinBox* dspinbox = new QDoubleSpinBox();
             dspinbox->setValue(settings.value("fieldValue").toDouble());
             ui->tableParameters->setCellWidget(i,1,dspinbox);
         }
-        else if(type == "Szöveg"){
+        else if(type == "Text"){
             QLineEdit* lineedit = new QLineEdit();
             lineedit->setText(settings.value("fieldValue").toString());
             ui->tableParameters->setCellWidget(i,1,lineedit);
@@ -90,7 +90,7 @@ void DialogParameters::loadParamDialogSettings(QString name)
         settings.endGroup();
     }
     settings.endArray();
-    bar->showMessage("Paraméter beállítások betöltve.");
+    bar->showMessage("Parameter settings loaded.");
 
 }
 
@@ -105,22 +105,22 @@ vector<string> DialogParameters::CompileParameters()
         QTableWidgetItem* wti;
         wti = ui->tableParameters->item(i,2);
         sclassname = wti->text().toStdString();
-        if(sclassname == "Lista"){//if its a list, save out the list values
+        if(sclassname == "List"){//if its a list, save out the list values
             QComboBox* cb;
             cb = (QComboBox*)ui->tableParameters->cellWidget(i,1);
             Parameters.push_back(cb->currentText().toStdString());
         }
-        else if(sclassname == "Egész"){
+        else if(sclassname == "Integer"){
              QSpinBox* spinbox;
              spinbox = (QSpinBox*)ui->tableParameters->cellWidget(i,1);
              Parameters.push_back(std::to_string(spinbox->value()));
         }
-        else if(sclassname == "Valós"){
+        else if(sclassname == "Double"){
             QDoubleSpinBox* dspinbox;
              dspinbox = (QDoubleSpinBox*)ui->tableParameters->cellWidget(i,1);
              Parameters.push_back(std::to_string(dspinbox->value()));
         }
-        else if(sclassname == "Szöveg"){
+        else if(sclassname == "Text"){
             QLineEdit* lineedit;
             lineedit = (QLineEdit*)ui->tableParameters->cellWidget(i,1);
             Parameters.push_back(lineedit->text().toStdString());
@@ -148,7 +148,7 @@ vector<std::string> DialogParameters::getParametersFromFile(QString name)
         settings.beginGroup(settings.childGroups().at(0));
         type = settings.value("type").toString();
 
-        if(type == "Lista"){
+        if(type == "List"){
 
             QStringList list = settings.value("listValues").toStringList();
             int i = settings.value("fieldValue").toInt();
@@ -172,9 +172,9 @@ void DialogParameters::on_buttonAdd_clicked()
     newParamRowDialog.exec();
     int re = newParamRowDialog.result();
     if(re == 1)
-        bar->showMessage("Új paraméter hozzá adva.");
+        bar->showMessage("New parameter added.");
     else
-        bar->showMessage("Ablak bezárva.");
+        bar->showMessage("Window closed.");
 }
 
 
@@ -196,7 +196,7 @@ void DialogParameters::on_buttonDelete_clicked()
     ui->tableParameters->removeRow(selected.row());
     settings.clear();
     saveParamDialogSettings();
-    bar->showMessage("Paraméter törölve.");
+    bar->showMessage("Parameter deleted.");
 
 }
 
@@ -230,7 +230,7 @@ void DialogParameters::saveParamDialogSettings()
 
         settings.setValue("label", label->text()); //Save the label key
 
-        if(type == "Lista"){//if its a list, save out the list values
+        if(type == "List"){//if its a list, save out the list values
 
             QComboBox* cb = (QComboBox*)ui->tableParameters->cellWidget(i,1);
             QStringList valuelist;
@@ -241,17 +241,17 @@ void DialogParameters::saveParamDialogSettings()
             value = cb->currentIndex();
 
         }
-        else if(type == "Egész"){
+        else if(type == "Integer"){
             QSpinBox* spinbox;
              spinbox = (QSpinBox*)ui->tableParameters->cellWidget(i,1);
              value = spinbox->value();
         }
-        else if(type == "Valós"){
+        else if(type == "Double"){
             QDoubleSpinBox* dspinbox;
              dspinbox = (QDoubleSpinBox*)ui->tableParameters->cellWidget(i,1);
              value = dspinbox->value();
         }
-        else if(type == "Szöveg"){
+        else if(type == "Text"){
             QLineEdit* lineedit;
             lineedit = (QLineEdit*)ui->tableParameters->cellWidget(i,1);
             value = lineedit->text();
@@ -262,7 +262,7 @@ void DialogParameters::saveParamDialogSettings()
     }
     settings.endArray();
 
-    bar->showMessage("Paraméter beállítások elmentve.");
+    bar->showMessage("Parameter settings saved.");
 
 }
 

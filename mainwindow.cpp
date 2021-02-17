@@ -111,7 +111,7 @@ void MainWindow::on_resizeButton_clicked()
 {
 
     myGridModel.ResizeGrid(ui->numberOfRowsBox->value(),ui->numberOfColumnsBox->value());
-    statusBar()->showMessage("Pálya átméretezve.");
+    statusBar()->showMessage("Map resized.");
 }
 
 void MainWindow::InitModelView()
@@ -168,7 +168,7 @@ void MainWindow::ReadAlgorithms()
    for (int i = 0; i < size; ++i) {
 
     slistAlgoDllPaths.push_back(settings.value(algoNameList.at(i)).toString()); //Store all dll path
-    qDebug()<<slistAlgoDllPaths.at(i);
+
    }
 
     ui->widgetListAlgorithms->addItems(algoNameList); //Set the algo name list
@@ -179,7 +179,7 @@ void MainWindow::on_clearButton_clicked()
 {
 
     myGridModel.clearGrid();
-    statusBar()->showMessage("Pálya letisztítva.");
+    statusBar()->showMessage("Map cleaned.");
 
 }
 
@@ -200,7 +200,7 @@ void MainWindow::addAlgorithm()
 
     dialog.exec();
 
-    setStatusTip(tr("Ablak bezárva."));
+    setStatusTip(tr("Window closed."));
 }
 
 void MainWindow::exit()
@@ -210,7 +210,7 @@ void MainWindow::exit()
 
 void MainWindow::CreateMenus()
 {
-    fileMenu = menuBar()->addMenu(tr("&Fájl"));
+    fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAlgoAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
@@ -218,12 +218,12 @@ void MainWindow::CreateMenus()
 
 void MainWindow::CreateActions()
 {
-    newAlgoAct = new QAction(tr("&Új algoritmus"), this);
-    newAlgoAct->setStatusTip(tr("Új algoritmus felvétele a listába."));
+    newAlgoAct = new QAction(tr("&New algorithm"), this);
+    newAlgoAct->setStatusTip(tr("Add new algorithm to the list."));
     connect(newAlgoAct, &QAction::triggered, this, &MainWindow::addAlgorithm);
 
-    exitAct = new QAction(tr("&Bezárás"), this);
-    exitAct->setStatusTip(tr("Program bezárása."));
+    exitAct = new QAction(tr("&Exit"), this);
+    exitAct->setStatusTip(tr("Exit the program."));
     connect(exitAct, &QAction::triggered, this, &MainWindow::exit);
 }
 
@@ -254,7 +254,7 @@ void MainWindow::on_buttonRun_clicked()
 {
 
     //LoaddllFile();
-    statusBar()->showMessage("Keresés indítása...");
+    statusBar()->showMessage("Starting search...");
     log.write("Starting new search process...");
     StartSearch();
 
@@ -280,7 +280,7 @@ void MainWindow::StartSearch()
     }
     log.write("Search parameters compiled.");
     try{
-        statusBar()->showMessage("Inicializálás.");
+        statusBar()->showMessage("Initialize");
         log.write("Initializing threadController...");
         if(threadController.Init(item->text(),algoNameToLoad,&gridcontroller,parameters)){
             log.write("threadController Init successful, sending out StartSearchSignal...");
@@ -290,15 +290,15 @@ void MainWindow::StartSearch()
            ui->buttonRun->setEnabled(false);
            ui->resizeButton->setEnabled(false);
            ui->clearButton->setEnabled(true);
-           statusBar()->showMessage("A keresés folyamatban...");
+           statusBar()->showMessage("Search is in progress...");
            log.write("Search started.");
         }
         else{
-           statusBar()->showMessage("Keresés inicializálás nem sikerült. Ellenőrizze a log fájlt a részletekért.");
+           statusBar()->showMessage("Initializing search failed.");
            log.write("INITIALIZATION OF THREADCONTROLLER WAS UNSUCCESSFUL.");
         }
     }catch(std::error_code e){
-        statusBar()->showMessage("Hiba történt a keresés inicializálás során. Ellenőrizze a log fájlt a részletekért.");
+        statusBar()->showMessage("Initializing failed.");
 
         log.write("*ERROR* error_code:" +QString::number(e.value())+QString::fromStdString(e.message()));
     }
@@ -314,15 +314,15 @@ void MainWindow::handleSearchFinish(int result)
     ui->button_Results->setEnabled(true);
 
     if(result == 0){
-        statusBar()->showMessage(tr("Sikeres keresés."));
+        statusBar()->showMessage(tr("Successful search."));
         log.write("Search finished successfully.");
     }
     else if(result == -1){
-        statusBar()->showMessage(tr("Keresés leállítva."));
+        statusBar()->showMessage(tr("Search stopped."));
         log.write("Search was stopped by the User.");
     }
     else{
-        statusBar()->showMessage("A keresés visszatérési értéke: "+QString::number(result));
+        statusBar()->showMessage("Search returned with: "+QString::number(result));
         log.write("Search has returned with the value: "+QString::number(result));
     }
 
@@ -353,12 +353,12 @@ void MainWindow::on_buttonDeleteAlgo_clicked()
 
  file.remove();
 
- statusBar()->showMessage(tr("Algoritmus törölve."));
+ statusBar()->showMessage(tr("Algorithm deleted."));
 }
 
 void MainWindow::on_button_Results_clicked()
 {
-    statusBar()->showMessage("Eredmények mutatása.");
+    statusBar()->showMessage("Show results.");
     dialog_results.show();
 }
 
@@ -386,6 +386,6 @@ void MainWindow::on_widgetListAlgorithms_itemClicked(QListWidgetItem *item)
 
 void MainWindow::on_pushButton_clicked()
 {
-    statusBar()->showMessage("Előző keresés színek törlése.");
+    statusBar()->showMessage("Remove previous search colors.");
     myGridModel.clearGridPaths();
 }

@@ -18,7 +18,7 @@ DialogAddAlgorithm::DialogAddAlgorithm(QWidget *parent,QListWidget* algoList_,QS
     bar->setSizeGripEnabled(false);
     ui->gridLayout->addWidget(bar);
     ui->gridLayout->setContentsMargins(0,0,0,0);
-    bar->showMessage(tr("Új algoritmus felvétele."));
+    bar->showMessage(tr("Add new algorithm."));
 
 }
 
@@ -34,7 +34,7 @@ void DialogAddAlgorithm::saveNewAlgorithm(const QString &algoName, const QString
 
    //save settings only if table has any items
    if(settings.contains(algoName)){
-    bar->showMessage(tr("A név már használatban van."));
+    bar->showMessage(tr("The name is already in use."));
     return;
    }
 
@@ -43,7 +43,7 @@ void DialogAddAlgorithm::saveNewAlgorithm(const QString &algoName, const QString
    algoList->addItem(algoName);
    dllPathList->push_back(filePath);
 
-   bar->showMessage(tr("Új algoritmus felvéve."));
+   bar->showMessage(tr("New algorithm added."));
 
 }
 
@@ -51,7 +51,7 @@ void DialogAddAlgorithm::saveNewAlgorithm(const QString &algoName, const QString
 void DialogAddAlgorithm::on_addFileButton_clicked()
 {
         QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Algoritmus hozzáadása"), "",
+        tr("Add algorithm"), "",
         tr("Address Book (*.dll)"));
         if (fileName.isEmpty())
                 return;

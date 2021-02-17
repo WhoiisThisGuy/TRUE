@@ -33,7 +33,7 @@
        </size>
       </property>
       <property name="title">
-       <string>Algoritmus Lista</string>
+       <string>Algorithm list</string>
       </property>
       <layout class="QFormLayout" name="formLayout">
        <item row="1" column="0">
@@ -59,7 +59,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Paraméterek</string>
+          <string>Parameters</string>
          </property>
         </widget>
        </item>
@@ -74,7 +74,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Törlés</string>
+          <string>Delete</string>
          </property>
         </widget>
        </item>
@@ -243,13 +243,13 @@
        </size>
       </property>
       <property name="title">
-       <string>Négyzetrács</string>
+       <string>Grid</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="3" column="0">
         <widget class="QPushButton" name="pushButton">
          <property name="text">
-          <string>Útvonalak törlése</string>
+          <string>Clear previous path</string>
          </property>
         </widget>
        </item>
@@ -268,7 +268,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Oszlopok száma</string>
+          <string>Number of columns</string>
          </property>
         </widget>
        </item>
@@ -317,7 +317,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Méretezés</string>
+          <string>Resize</string>
          </property>
         </widget>
        </item>
@@ -366,7 +366,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Tisztítás</string>
+          <string>Clean</string>
          </property>
         </widget>
        </item>
@@ -385,7 +385,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Sorok száma</string>
+          <string>Number of rows</string>
          </property>
         </widget>
        </item>
@@ -407,7 +407,7 @@
        </size>
       </property>
       <property name="title">
-       <string>Keresés</string>
+       <string>Search</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <item row="3" column="0">
@@ -433,7 +433,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Futtatás</string>
+          <string>Run</string>
          </property>
         </widget>
        </item>
@@ -454,7 +454,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Eredmény</string>
+          <string>Result</string>
          </property>
         </widget>
        </item>
@@ -475,7 +475,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Leállítás</string>
+          <string>Stop</string>
          </property>
         </widget>
        </item>

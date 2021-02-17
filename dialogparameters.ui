@@ -23,21 +23,21 @@
    <item row="1" column="1">
     <widget class="QPushButton" name="buttonDelete">
      <property name="text">
-      <string>Törlés</string>
+      <string>Delete</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
     <widget class="QPushButton" name="buttonAdd">
      <property name="text">
-      <string>Hozzáadás</string>
+      <string>Add</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
     <widget class="QPushButton" name="buttonSaveParams">
      <property name="text">
-      <string>Mentés</string>
+      <string>Save</string>
      </property>
     </widget>
    </item>
@@ -60,17 +60,17 @@
      </attribute>
      <column>
       <property name="text">
-       <string>Név</string>
+       <string>Name</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Érték</string>
+       <string>Value</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Típus</string>
+       <string>Type</string>
       </property>
      </column>
     </widget>

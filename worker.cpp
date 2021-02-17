@@ -53,7 +53,8 @@ Worker::Worker(const vector<string> &Parameters_, bool *abortFlag_)
 Worker::~Worker()
 {
     if(pathfinderobject){
-        delete pathfinderobject;       
+        delete pathfinderobject;
+        pathfinderobject = nullptr;
     }
 }
 

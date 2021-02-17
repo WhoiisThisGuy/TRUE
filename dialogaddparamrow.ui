@@ -51,7 +51,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Új paraméter neve</string>
+    <string>Parameter name</string>
    </property>
   </widget>
   <widget class="QPushButton" name="buttonSave">
@@ -67,7 +67,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Mentés</string>
+    <string>Save</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -85,7 +85,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Paraméter típusa</string>
+    <string>Parameter type</string>
    </property>
   </widget>
   <widget class="QComboBox" name="comboBoxParamType">
@@ -96,6 +96,9 @@
      <width>61</width>
      <height>22</height>
     </rect>
+   </property>
+   <property name="currentText">
+    <string>Egész</string>
    </property>
    <item>
     <property name="text">
@@ -131,7 +134,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Lista értékek felvétele</string>
+    <string>Add list values</string>
    </property>
    <widget class="QLabel" name="label_4">
     <property name="enabled">
@@ -151,7 +154,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Lista értékek</string>
+     <string>List values</string>
     </property>
    </widget>
    <widget class="QPushButton" name="buttonAddNewValue">
@@ -167,7 +170,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Felvesz</string>
+     <string>Add</string>
     </property>
    </widget>
    <widget class="QComboBox" name="comboBoxListValues">
@@ -201,7 +204,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Érték hozzáadása</string>
+     <string>Add value</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineSingleListValue">

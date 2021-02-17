@@ -7,7 +7,6 @@ dialogResults::dialogResults(QWidget *parent) :
 {
     ui->setupUi(this);
     setModal(false);
-    ui->lineEdit->setText("sdujisdu9jigsdujigsdujig");
 }
 
 dialogResults::~dialogResults()
