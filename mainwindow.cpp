@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     ,gridcontroller(&mediator)
     ,log(this,"log.txt")
 {
+    mouseLeftClickOnHold = false;
+    clickedOnWhite = false;
 
     ui->setupUi(this);
 
@@ -31,6 +33,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ReadAlgorithms(); //load in the list of algorithms
     threadController.log = &log;
+
+    ui->myGridView->viewport()->installEventFilter(this);
+
 }
 
 
@@ -70,15 +75,6 @@ void MainWindow::on_myGridView_clicked(const QModelIndex &index)
         }
         return;
     }
-    if(cellData == 0){ //clicked on white cell
-
-        myGridModel.setGridValue(index.row(),index.column(),1); //set gray cell
-
-    }
-    else if(cellData == 1){//clicked on gray cell
-
-       myGridModel.setGridValue(index.row(),index.column(),0); //set white cell
-    }
     else if( cellData == 2 || cellData == 3 ){
 
         isStartOrTargetSelected = true;
@@ -93,8 +89,8 @@ void MainWindow::on_myGridView_clicked(const QModelIndex &index)
 void MainWindow::on_myGridView_entered(const QModelIndex &index)
 {
 
-  if(isStartOrTargetSelected) {
-    int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2;
+  if(isStartOrTargetSelected) { //Handle endpoints drag
+    int oppositeColor = startOrTargetSelectedColor == 2 ? 3 : 2; //opposite: red <-> green
       if(myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()] != oppositeColor
       && myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()] != 1
       && (index.column() != startOrTargetSelectedIndex.col || startOrTargetSelectedIndex.row != index.row())) //if cursor moved in a different cell
@@ -105,6 +101,14 @@ void MainWindow::on_myGridView_entered(const QModelIndex &index)
       }
       myGridModel.setGridValue(index.row(),index.column(),startOrTargetSelectedColor);
    }
+  if(mouseLeftClickOnHold){
+      if(myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()] == 0 && clickedOnWhite){
+          myGridModel.setGridValue(index.row(),index.column(),1);
+      }
+      else if(myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()] == 1 && !clickedOnWhite){
+          myGridModel.setGridValue(index.row(),index.column(),0);
+      }
+  }
 }
 
 void MainWindow::on_resizeButton_clicked()
@@ -142,7 +146,7 @@ void MainWindow::InitModelView()
     ui->numberOfColumnsBox->setValue(myGridModel.numberOfColumns);
 }
 
-void MainWindow::AddAlgorithmToFile(const QString& string)
+void MainWindow::AddAlgorithmToFile()
 {
     QFile file(CFGPATH);
 
@@ -388,4 +392,27 @@ void MainWindow::on_pushButton_clicked()
 {
     statusBar()->showMessage("Remove previous search colors.");
     myGridModel.clearGridPaths();
+}
+
+bool MainWindow::eventFilter(QObject *object, QEvent *event)
+{
+    if (object == ui->myGridView->viewport() && event->type() == QEvent::MouseButtonRelease) {
+            mouseLeftClickOnHold = false;
+            return true;//view does not have to process this event
+     }
+     return false;
+}
+
+void MainWindow::on_myGridView_pressed(const QModelIndex &index)
+{
+    mouseLeftClickOnHold = true;
+    if(myGridModel.grid[index.row()*myGridModel.numberOfColumns+index.column()] == 0){
+        clickedOnWhite = true;
+        myGridModel.setGridValue(index.row(),index.column(),1);
+    }
+    else{
+        clickedOnWhite = false;
+        myGridModel.setGridValue(index.row(),index.column(),0);
+    }
+
 }

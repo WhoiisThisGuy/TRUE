@@ -45,7 +45,7 @@ private:
     void CreateMenus();
     void CreateActions();
     void InitModelView();
-    void AddAlgorithmToFile(const QString& string);
+    void AddAlgorithmToFile();
     void ReadAlgorithms(); //
     void StartSearch();
     void LoaddllFile(); //Loads the dll file and gets the IPathfinder object
@@ -84,6 +84,12 @@ private slots:
 
     void on_pushButton_clicked();
 
+    bool eventFilter(QObject *object, QEvent *event) override;
+
+
+
+    void on_myGridView_pressed(const QModelIndex &index);
+
 private:
 
     /*Init list start */
@@ -119,7 +125,8 @@ private:
 
     dialogResults dialog_results;
 
-
+    bool mouseLeftClickOnHold; //Event filter and TableView press event changes this
+    bool clickedOnWhite; //to tell if click hold started on a white | grey cell
 
 };
 #endif // MAINWINDOW_H

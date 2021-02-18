@@ -5,24 +5,25 @@
 Logger::Logger(QObject *parent, QString fileName) : QObject(parent) {
 
 
-//    if (!fileName.isEmpty() && !file.isOpen()) {
+    if (!fileName.isEmpty() && !file.isOpen()) {
 
-//     file.setFileName("log.txt");
+     file.setFileName("log.txt");
 
-//     if(file.open(QIODevice::WriteOnly))
-//         cout<<"aeska"<<endl;
-//     else{
-//         cout<<"dam, son"<<endl;
-//         cout<<file.errorString().toStdString()<<endl;
-//        cout<<file.error()<<endl;
-//        cout<<file.PermissionsError<<endl;
-//        cout<<file.permissions()<<endl;
-//        cout<<file.OpenError<<endl;
-//        cout<<file.fileName().toStdString()<<endl;
+     if(file.open(QIODevice::WriteOnly)){
+         ;//good
+     }
 
-//     }
+     else{ //not good
+         cout<<file.errorString().toStdString()<<endl;
+        cout<<file.error()<<endl;
+        cout<<file.PermissionsError<<endl;
+        cout<<file.permissions()<<endl;
+        cout<<file.OpenError<<endl;
+        cout<<file.fileName().toStdString()<<endl;
 
-//    }
+     }
+
+    }
 }
 
 void Logger::write(const QString &value) {
